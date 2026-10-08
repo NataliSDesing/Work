@@ -168,12 +168,12 @@ function viewMap() {
     const open = i === 0 || S.m[MISSIONS[i - 1].id];
     h += `<button class="port ${st ? "done" : ""} ${open ? "" : "locked"}" data-id="${m.id}" ${open ? "" : "disabled"}>
       <div class="ico">${open ? m.icon : "🔒"}</div>
-      <div class="t"><b>${esc(m.title)}</b>
+      <div class="t"><b>${esc(m.par)} · ${esc(m.title)}</b>
       <small>${st ? `<span class="stars">${"★".repeat(st)}${"☆".repeat(3 - st)}</span> пройдено` : open ? `${m.questions.length} заданий` : "откроется после предыдущего порта"}</small></div></button>`;
   });
-  for (let i = 0; i < LOCKED_PORTS; i++) {
-    h += `<div class="port locked"><div class="ico">❓</div><div class="t"><b>Неизвестный порт</b><small>скоро на карте</small></div></div>`;
-  }
+  LOCKED_PORTS.forEach(p => {
+    h += `<div class="port locked"><div class="ico">${p.icon}</div><div class="t"><b>${esc(p.title)}</b><small>${esc(p.sub)}</small></div></div>`;
+  });
   h += `</div>`;
   const reviewReady = done > 0;
   const doneToday = S.reviewDay === today();
@@ -188,7 +188,7 @@ function viewMap() {
 function intro(id) {
   const m = MISSIONS.find(x => x.id === id);
   const st = S.m[id];
-  shell(`<h2>${m.icon} ${esc(m.title)}</h2>
+  shell(`<h2>${m.icon} ${esc(m.par)} · ${esc(m.title)}</h2>
     <div class="card-box"><p class="story">${esc(m.story)}</p>
     <p>Заданий: <b>${m.questions.length}</b>. За первое прохождение — очки и карточки героев.${st ? " Ты уже проходил эту миссию, за повтор очков меньше." : ""}</p>
     <button class="btn gold" id="start">Отправиться</button>
