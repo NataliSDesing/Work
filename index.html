@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12304a">
+<title>Хронографы</title>
+<style>
+:root {
+  --sea: #12304a; --sea2: #1d4a6e; --sand: #f4e9d0; --paper: #fbf5e6; --ink: #2a2118;
+  --gold: #e0a526; --ok: #2e8b57; --bad: #c0392b; --muted: #8a7d66;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--sand); color: var(--ink); min-height: 100vh; }
+button { font: inherit; cursor: pointer; border: 0; }
+.wrap { max-width: 520px; margin: 0 auto; padding: 0 16px 40px; }
+header { background: var(--sea); color: #fff; padding: calc(12px + env(safe-area-inset-top)) 16px 14px; }
+header .row { max-width: 520px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; font-size: 22px; flex: none; }
+.who { flex: 1; min-width: 0; }
+.who b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.who small { opacity: .8; }
+.bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.2); margin-top: 6px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--gold); width: 0; transition: width .5s; }
+.streak { text-align: center; font-size: 13px; line-height: 1.1; }
+.streak b { display: block; font-size: 20px; }
+h2 { margin: 22px 0 8px; font-size: 18px; }
+.map { position: relative; margin-top: 18px; padding-left: 8px; }
+.map::before { content: ""; position: absolute; left: 36px; top: 20px; bottom: 20px; border-left: 3px dashed #b9a67c; }
+.port { position: relative; display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; background: var(--paper); border-radius: 16px; padding: 12px; margin-bottom: 14px; box-shadow: 0 2px 0 #d6c79f; color: inherit; }
+.port .ico { width: 56px; height: 56px; border-radius: 50%; background: var(--sea2); color: #fff; display: grid; place-items: center; font-size: 26px; flex: none; z-index: 1; border: 3px solid var(--paper); }
+.port.done .ico { background: var(--ok); }
+.port.locked { opacity: .55; }
+.port.locked .ico { background: #9c9078; }
+.port .t b { display: block; line-height: 1.25; }
+.port .t small { color: var(--muted); }
+.stars { letter-spacing: 2px; color: var(--gold); }
+.btn { display: block; width: 100%; padding: 14px 16px; border-radius: 14px; background: var(--sea2); color: #fff; font-weight: 600; font-size: 16px; text-align: center; margin-top: 10px; }
+.btn.gold { background: var(--gold); color: #3a2a05; }
+.btn.ghost { background: transparent; color: var(--sea2); border: 2px solid var(--sea2); }
+.btn:disabled { opacity: .4; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card-box { background: var(--paper); border-radius: 16px; padding: 14px; box-shadow: 0 2px 0 #d6c79f; margin-top: 14px; }
+.story { font-style: italic; color: #4b4030; }
+.play-top { display: flex; align-items: center; gap: 10px; padding: 14px 0 6px; }
+.play-top .x { background: none; font-size: 22px; color: var(--sea2); }
+.play-top .bar { flex: 1; background: #d6c79f; margin: 0; }
+.play-top .bar i { background: var(--ok); }
+.q { font-size: 19px; font-weight: 600; line-height: 1.3; margin: 16px 0; }
+.opt { display: block; width: 100%; text-align: left; background: var(--paper); border: 2px solid #d6c79f; border-radius: 14px; padding: 14px; margin-bottom: 10px; font-size: 16px; color: inherit; }
+.opt.right { border-color: var(--ok); background: #dff2e6; }
+.opt.wrong { border-color: var(--bad); background: #f8dedb; }
+.opt.sel { border-color: var(--sea2); background: #e2edf6; }
+.opt.used { opacity: .35; }
+.opt.dim { opacity: .55; }
+.seq { min-height: 54px; background: #efe3c3; border-radius: 14px; padding: 8px; margin-bottom: 14px; }
+.seq .opt { margin: 0 0 6px; padding: 10px 12px; border-color: var(--sea2); background: #fff; }
+.seq .ph { color: var(--muted); padding: 8px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cols .opt { padding: 10px; font-size: 14px; margin: 0 0 10px; }
+.fb { border-radius: 14px; padding: 14px; margin-top: 12px; }
+.fb.ok { background: #dff2e6; border-left: 6px solid var(--ok); }
+.fb.no { background: #f8dedb; border-left: 6px solid var(--bad); }
+.fb b { display: block; margin-bottom: 4px; }
+.center { text-align: center; }
+.big { font-size: 64px; line-height: 1.1; margin: 20px 0 4px; }
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.collect { background: var(--paper); border-radius: 14px; padding: 12px; text-align: center; box-shadow: 0 2px 0 #d6c79f; }
+.collect .ci { font-size: 36px; }
+.collect small { display: block; color: #4b4030; text-align: left; margin-top: 6px; font-size: 12.5px; line-height: 1.35; }
+.collect.off { opacity: .5; filter: grayscale(1); }
+.modal { position: fixed; inset: 0; background: rgba(10,25,40,.6); display: grid; place-items: center; padding: 20px; z-index: 5; }
+.modal > div { background: var(--paper); border-radius: 18px; padding: 20px; max-width: 420px; width: 100%; }
+input[type=text], textarea { width: 100%; font: inherit; padding: 12px; border-radius: 12px; border: 2px solid #d6c79f; background: #fff; }
+textarea { min-height: 90px; font-family: monospace; font-size: 12px; }
+.pop { animation: pop .35s; }
+@keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+nav.tabs { position: sticky; bottom: 0; display: flex; background: var(--sea); }
+nav.tabs button { flex: 1; padding: 12px 4px calc(12px + env(safe-area-inset-bottom)); background: none; color: #fff; opacity: .6; font-size: 13px; }
+nav.tabs button.on { opacity: 1; font-weight: 700; }
+nav.tabs span { display: block; font-size: 20px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="data.js"></script>
+<script>
+// ---------- Состояние ----------
+const KEY = "chronographs.v1";
+const $app = document.getElementById("app");
+let S = load();
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && s.v === 1) return s;
+  } catch (e) {}
+  return { v: 1, name: "", xp: 0, m: {}, w: {}, cards: [], day: "", streak: 0, reviewDay: "" };
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+function touchStreak() {
+  const t = today();
+  if (S.day === t) return;
+  const y = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+  S.streak = S.day === y ? S.streak + 1 : 1;
+  S.day = t;
+}
+function levelInfo() {
+  let i = 0;
+  while (i + 1 < LEVELS.length && S.xp >= LEVELS[i + 1].xp) i++;
+  const cur = LEVELS[i], next = LEVELS[i + 1];
+  const pct = next ? Math.round((S.xp - cur.xp) / (next.xp - cur.xp) * 100) : 100;
+  return { n: i + 1, title: cur.title, pct, left: next ? next.xp - S.xp : 0 };
+}
+const allQuestions = () => MISSIONS.flatMap(m => m.questions);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ---------- Каркас ----------
+let tab = "map";
+function shell(inner) {
+  const L = levelInfo();
+  $app.innerHTML = `
+  <header><div class="row">
+    <div class="avatar">🧭</div>
+    <div class="who"><b>${esc(S.name)}</b><small>Уровень ${L.n} · ${L.title} · ${S.xp} оч.</small>
+      <div class="bar"><i style="width:${L.pct}%"></i></div></div>
+    <div class="streak"><b>🔥${S.streak}</b>дней</div>
+  </div></header>
+  <div class="wrap">${inner}</div>
+  <nav class="tabs">
+    <button data-t="map" class="${tab === "map" ? "on" : ""}"><span>🗺️</span>Карта</button>
+    <button data-t="cards" class="${tab === "cards" ? "on" : ""}"><span>🃏</span>Карточки</button>
+    <button data-t="me" class="${tab === "me" ? "on" : ""}"><span>📜</span>Мой код</button>
+  </nav>`;
+  $app.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
+}
+
+function render() {
+  if (!S.name) return askName();
+  if (tab === "cards") return viewCards();
+  if (tab === "me") return viewMe();
+  return viewMap();
+}
+
+function askName() {
+  $app.innerHTML = `<div class="wrap"><div class="center big">⚓</div>
+    <h2 class="center">Хронографы</h2>
+    <p class="center story">Машина времени сломалась. Класс — единственная команда, которая сможет её починить. Как тебя зовут, хронограф?</p>
+    <input type="text" id="nm" placeholder="Имя и первая буква фамилии" maxlength="30" autocomplete="off">
+    <button class="btn gold" id="go">В путь</button></div>`;
+  const go = () => { const v = document.getElementById("nm").value.trim(); if (v) { S.name = v; save(); render(); } };
+  document.getElementById("go").onclick = go;
+  document.getElementById("nm").onkeydown = e => { if (e.key === "Enter") go(); };
+}
+
+// ---------- Карта ----------
+function viewMap() {
+  const done = Object.keys(S.m).length;
+  let h = `<h2>Карта экспедиции</h2><div class="map">`;
+  MISSIONS.forEach((m, i) => {
+    const st = S.m[m.id];
+    const open = i === 0 || S.m[MISSIONS[i - 1].id];
+    h += `<button class="port ${st ? "done" : ""} ${open ? "" : "locked"}" data-id="${m.id}" ${open ? "" : "disabled"}>
+      <div class="ico">${open ? m.icon : "🔒"}</div>
+      <div class="t"><b>${esc(m.title)}</b>
+      <small>${st ? `<span class="stars">${"★".repeat(st)}${"☆".repeat(3 - st)}</span> пройдено` : open ? `${m.questions.length} заданий` : "откроется после предыдущего порта"}</small></div></button>`;
+  });
+  for (let i = 0; i < LOCKED_PORTS; i++) {
+    h += `<div class="port locked"><div class="ico">❓</div><div class="t"><b>Неизвестный порт</b><small>скоро на карте</small></div></div>`;
+  }
+  h += `</div>`;
+  const reviewReady = done > 0;
+  const doneToday = S.reviewDay === today();
+  h += `<div class="card-box"><b>Повторение</b><br><small>5 вопросов из пройденного. Зарабатывай очки и не забывай то, что уже знаешь.</small>
+    <button class="btn gold" id="rev" ${reviewReady ? "" : "disabled"}>${reviewReady ? (doneToday ? "Повторить ещё раз" : "Начать повторение") : "Откроется после первой миссии"}</button></div>`;
+  shell(h);
+  $app.querySelectorAll(".port[data-id]").forEach(b => b.onclick = () => intro(b.dataset.id));
+  const r = document.getElementById("rev");
+  if (r && reviewReady) r.onclick = startReview;
+}
+
+function intro(id) {
+  const m = MISSIONS.find(x => x.id === id);
+  const st = S.m[id];
+  shell(`<h2>${m.icon} ${esc(m.title)}</h2>
+    <div class="card-box"><p class="story">${esc(m.story)}</p>
+    <p>Заданий: <b>${m.questions.length}</b>. За первое прохождение — очки и карточки героев.${st ? " Ты уже проходил эту миссию, за повтор очков меньше." : ""}</p>
+    <button class="btn gold" id="start">Отправиться</button>
+    <button class="btn ghost" id="back">Назад</button></div>`);
+  document.getElementById("start").onclick = () => startMission(m);
+  document.getElementById("back").onclick = render;
+}
+
+// ---------- Игровая сессия ----------
+let run = null;
+function startMission(m) {
+  run = {
+    kind: "mission", mission: m, queue: shuffle(m.questions), total: m.questions.length,
+    firstTry: 0, xp: 0, seen: {}, replay: !!S.m[m.id], answered: 0
+  };
+  nextQ();
+}
+function startReview() {
+  const pool = allQuestions().filter(q => S.m[q.id.split("q")[0]]);
+  const weighted = shuffle(pool).sort((a, b) => (S.w[b.id] || 0) - (S.w[a.id] || 0) + (Math.random() - .5));
+  run = { kind: "review", queue: weighted.slice(0, 5), total: Math.min(5, pool.length), firstTry: 0, xp: 0, seen: {}, answered: 0 };
+  nextQ();
+}
+function nextQ() {
+  if (!run.queue.length) return finish();
+  const q = run.queue[0];
+  const retry = !!run.seen[q.id];
+  const head = `<div class="play-top"><button class="x" id="quit">✕</button>
+    <div class="bar"><i style="width:${Math.min(100, run.answered / run.total * 100)}%"></i></div></div>`;
+  shell(head + `<div class="q">${retry ? "🔁 Ещё раз. " : ""}${esc(q.q)}</div><div id="body"></div><div id="fb"></div>`);
+  document.getElementById("quit").onclick = () => { if (confirm("Выйти? Прогресс этой миссии не сохранится.")) { run = null; render(); } };
+  const body = document.getElementById("body");
+  ({ choice: qChoice, tf: qTf, order: qOrder, match: qMatch })[q.t](q, body, ok => answer(q, ok));
+}
+function answer(q, ok) {
+  const retry = !!run.seen[q.id];
+  run.seen[q.id] = true;
+  if (!ok) S.w[q.id] = (S.w[q.id] || 0) + 1;
+  let gain = 0;
+  if (ok) {
+    if (!retry) run.firstTry++;
+    gain = run.kind === "review" ? 5 : retry ? 3 : run.replay ? 3 : 10;
+    run.xp += gain; S.xp += gain;
+  }
+  if (ok || retry) { run.queue.shift(); run.answered++; }
+  else { run.queue.push(run.queue.shift()); }
+  save();
+  const fb = document.getElementById("fb");
+  fb.innerHTML = `<div class="fb ${ok ? "ok" : "no"} pop"><b>${ok ? `Верно! +${gain}` : "Не совсем"}</b>${esc(q.e)}</div>
+    <button class="btn gold" id="next">Дальше</button>`;
+  document.getElementById("next").onclick = nextQ;
+  fb.scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
+function lock(root) { root.querySelectorAll("button").forEach(b => b.disabled = true); }
+
+function qChoice(q, root, done) {
+  root.innerHTML = q.o.map((t, i) => `<button class="opt" data-i="${i}">${esc(t)}</button>`).join("");
+  root.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const i = +b.dataset.i, ok = i === q.a;
+    root.querySelectorAll(".opt").forEach((x, j) => { if (j === q.a) x.classList.add("right"); else if (j === i) x.classList.add("wrong"); else x.classList.add("dim"); });
+    lock(root); done(ok);
+  });
+}
+function qTf(q, root, done) {
+  qChoice({ ...q, o: ["Верно", "Неверно"], a: q.a ? 0 : 1 }, root, done);
+}
+function qOrder(q, root, done) {
+  const order = shuffle(q.items.map((t, i) => ({ t, i })));
+  const picked = [];
+  const draw = () => {
+    root.innerHTML = `<div class="seq">${picked.length ? picked.map((p, n) => `<div class="opt">${n + 1}. ${esc(p.t)}</div>`).join("") : `<div class="ph">Нажимай на события по порядку…</div>`}</div>
+      ${order.map((o, k) => `<button class="opt ${picked.includes(o) ? "used" : ""}" data-k="${k}" ${picked.includes(o) ? "disabled" : ""}>${esc(o.t)}</button>`).join("")}
+      <div class="grid2"><button class="btn ghost" id="rs">Сбросить</button><button class="btn" id="ck" ${picked.length === order.length ? "" : "disabled"}>Проверить</button></div>`;
+    root.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { picked.push(order[+b.dataset.k]); draw(); });
+    root.querySelector("#rs").onclick = () => { picked.length = 0; draw(); };
+    root.querySelector("#ck").onclick = () => {
+      const ok = picked.every((p, n) => p.i === n);
+      root.innerHTML = `<div class="seq">${q.items.map((t, n) => `<div class="opt right">${n + 1}. ${esc(t)}</div>`).join("")}</div>`;
+      done(ok);
+    };
+  };
+  draw();
+}
+function qMatch(q, root, done) {
+  const L = shuffle(q.pairs.map((p, i) => ({ t: p[0], i })));
+  const R = shuffle(q.pairs.map((p, i) => ({ t: p[1], i })));
+  const solved = new Set(); let selL = null, mistakes = 0;
+  const draw = () => {
+    root.innerHTML = `<div class="cols"><div>${L.map((o, k) => `<button class="opt ${solved.has(o.i) ? "right" : selL === o ? "sel" : ""}" data-l="${k}" ${solved.has(o.i) ? "disabled" : ""}>${esc(o.t)}</button>`).join("")}</div>
+      <div>${R.map((o, k) => `<button class="opt ${solved.has(o.i) ? "right" : ""}" data-r="${k}" ${solved.has(o.i) ? "disabled" : ""}>${esc(o.t)}</button>`).join("")}</div></div>`;
+    root.querySelectorAll("[data-l]").forEach(b => b.onclick = () => { selL = L[+b.dataset.l]; draw(); });
+    root.querySelectorAll("[data-r]").forEach(b => b.onclick = () => {
+      if (!selL) return;
+      if (R[+b.dataset.r].i === selL.i) {
+        solved.add(selL.i); selL = null; draw();
+        if (solved.size === q.pairs.length) { lock(root); done(mistakes === 0); }
+      } else {
+        mistakes++; selL = null; draw();
+        root.querySelectorAll("[data-r]")[+b.dataset.r]?.classList.add("shake");
+      }
+    });
+  };
+  draw();
+}
+
+function finish() {
+  touchStreak();
+  const r = run; run = null;
+  let extra = "";
+  if (r.kind === "mission") {
+    const acc = r.firstTry / r.total;
+    const stars = acc >= .9 ? 3 : acc >= .6 ? 2 : 1;
+    const prevStars = S.m[r.mission.id] || 0;
+    S.m[r.mission.id] = Math.max(prevStars, stars);
+    const gained = r.mission.cards.filter(c => !S.cards.includes(c));
+    S.cards.push(...gained);
+    if (!prevStars) { S.xp += 20; r.xp += 20; }
+    extra = `<div class="big">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</div>
+      <p class="center">С первой попытки: <b>${r.firstTry} из ${r.total}</b></p>
+      ${gained.length ? `<div class="card-box"><b>Новые карточки:</b><div class="card-grid">${gained.map(c => `<div class="collect pop"><div class="ci">${CARDS[c].icon}</div><b>${esc(CARDS[c].name)}</b></div>`).join("")}</div></div>` : ""}`;
+  } else {
+    S.reviewDay = today();
+    extra = `<div class="big">🧠</div><p class="center">Повторение — лучший способ ничего не забыть. Правильно с первой попытки: <b>${r.firstTry} из ${r.total}</b></p>`;
+  }
+  save();
+  const L = levelInfo();
+  shell(`<h2 class="center">${r.kind === "mission" ? "Порт пройден!" : "Повторение завершено"}</h2>${extra}
+    <p class="center">Заработано: <b>+${r.xp} оч.</b> · Уровень ${L.n}: ${L.title}${L.left ? ` (до следующего ${L.left})` : ""}</p>
+    <button class="btn gold" id="home">На карту</button>`);
+  document.getElementById("home").onclick = () => { tab = "map"; render(); };
+}
+
+// ---------- Карточки ----------
+function viewCards() {
+  const ids = Object.keys(CARDS);
+  shell(`<h2>Коллекция: ${S.cards.length} из ${ids.length}</h2><div class="card-grid">${ids.map(id => {
+    const has = S.cards.includes(id), c = CARDS[id];
+    return `<div class="collect ${has ? "" : "off"}"><div class="ci">${has ? c.icon : "❔"}</div><b>${has ? esc(c.name) : "???"}</b>
+      ${has ? `<small>${esc(c.text)}</small>` : `<small>Пройди миссию, чтобы открыть</small>`}</div>`;
+  }).join("")}</div>`);
+}
+
+// ---------- Мой код для учителя ----------
+function makeCode() {
+  const o = { v: 1, n: S.name, x: S.xp, m: S.m, w: S.w, d: S.day, s: S.streak, c: S.cards.length };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+}
+function viewMe() {
+  const code = makeCode();
+  shell(`<h2>Мой отчёт</h2><div class="card-box"><p>Покажи этот код учителю — так класс увидит общий прогресс.</p>
+    <textarea readonly id="code">${code}</textarea>
+    <button class="btn gold" id="copy">Скопировать код</button></div>
+    <div class="card-box"><button class="btn ghost" id="reset">Начать заново на этом телефоне</button></div>`);
+  document.getElementById("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(code); document.getElementById("copy").textContent = "Скопировано ✓"; }
+    catch (e) { document.getElementById("code").select(); document.execCommand("copy"); }
+  };
+  document.getElementById("reset").onclick = () => {
+    if (confirm("Всё удалить: очки, карточки, имя?")) { localStorage.removeItem(KEY); S = load(); tab = "map"; render(); }
+  };
+}
+
+render();
+</script>
+</body>
+</html>

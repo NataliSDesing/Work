@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Хронографы — учитель</title>
+<style>
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4e9d0; color: #2a2118; margin: 0; padding: 16px; }
+.wrap { max-width: 760px; margin: 0 auto; }
+.box { background: #fbf5e6; border-radius: 14px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 0 #d6c79f; }
+textarea { width: 100%; min-height: 80px; font: 12px monospace; padding: 10px; border-radius: 10px; border: 2px solid #d6c79f; }
+button { font: inherit; font-weight: 600; padding: 10px 16px; border: 0; border-radius: 10px; background: #1d4a6e; color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: #1d4a6e; border: 2px solid #1d4a6e; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e3d6b3; }
+.bar { height: 14px; background: #d6c79f; border-radius: 7px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: #2e8b57; }
+.stars { color: #e0a526; }
+.weak td:last-child { white-space: nowrap; font-weight: 700; color: #c0392b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Учитель: сводка класса</h1>
+
+  <div class="box">
+    <b>Добавить отчёты учеников</b>
+    <p>Ученик в приложении открывает «Мой код» и показывает или присылает код. Вставьте один или несколько кодов (каждый с новой строки).</p>
+    <textarea id="in" placeholder="Вставьте коды сюда"></textarea>
+    <p><button id="add">Добавить</button> <button class="ghost" id="clear">Очистить список</button></p>
+    <p id="msg"></p>
+  </div>
+
+  <div class="box" id="ship"></div>
+  <div class="box" id="table"></div>
+  <div class="box" id="weak"></div>
+</div>
+<script src="data.js"></script>
+<script>
+const KEY = "chronographs.teacher.v1";
+let R = {};
+try { R = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const decode = c => JSON.parse(decodeURIComponent(escape(atob(c.trim()))));
+
+document.getElementById("add").onclick = () => {
+  const lines = document.getElementById("in").value.split(/\s+/).filter(Boolean);
+  let ok = 0, bad = 0;
+  lines.forEach(l => { try { const o = decode(l); if (o && o.n) { R[o.n] = o; ok++; } else bad++; } catch (e) { bad++; } });
+  localStorage.setItem(KEY, JSON.stringify(R));
+  document.getElementById("msg").textContent = `Добавлено: ${ok}${bad ? `, не распознано: ${bad}` : ""}`;
+  document.getElementById("in").value = "";
+  draw();
+};
+document.getElementById("clear").onclick = () => {
+  if (confirm("Удалить все загруженные отчёты?")) { R = {}; localStorage.removeItem(KEY); draw(); }
+};
+
+function draw() {
+  const kids = Object.values(R).sort((a, b) => b.x - a.x);
+  const total = kids.reduce((s, k) => s + k.x, 0);
+  const goal = Math.max(1, kids.length) * 300;
+  document.getElementById("ship").innerHTML = `<b>Общий корабль класса</b><p>${total} очков из ${goal} (цель — по 300 на ученика)</p>
+    <div class="bar"><i style="width:${Math.min(100, total / goal * 100)}%"></i></div>
+    <p><small>Когда шкала заполнится, откройте классу общую награду.</small></p>`;
+
+  document.getElementById("table").innerHTML = `<b>Ученики (${kids.length})</b><table><tr><th>Имя</th><th>Очки</th><th>Серия</th>${MISSIONS.map(m => `<th title="${esc(m.title)}">${m.icon}</th>`).join("")}</tr>
+    ${kids.map(k => `<tr><td>${esc(k.n)}</td><td>${k.x}</td><td>${k.s || 0}🔥</td>${MISSIONS.map(m => `<td class="stars">${k.m && k.m[m.id] ? "★".repeat(k.m[m.id]) : "–"}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="9">Пока нет данных</td></tr>`}</table>`;
+
+  const wrong = {};
+  kids.forEach(k => Object.entries(k.w || {}).forEach(([q, n]) => wrong[q] = (wrong[q] || 0) + n));
+  const qs = Object.fromEntries(allQ().map(q => [q.id, q]));
+  const rows = Object.entries(wrong).sort((a, b) => b[1] - a[1]).slice(0, 8).filter(([id]) => qs[id]);
+  document.getElementById("weak").innerHTML = `<b>Над чем стоит поработать на уроке</b><p><small>Вопросы, где класс ошибается чаще всего.</small></p>
+    <table class="weak">${rows.map(([id, n]) => `<tr><td>${esc(qs[id].q)}</td><td>${n} ош.</td></tr>`).join("") || `<tr><td>Ошибок пока нет</td><td></td></tr>`}</table>`;
+}
+function allQ() { return MISSIONS.flatMap(m => m.questions); }
+draw();
+</script>
+</body>
+</html>
