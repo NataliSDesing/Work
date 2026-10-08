@@ -19,17 +19,17 @@ function owlBody(mood) {
   if (mood === "happy" || mood === "cheer") {
     eyes = arc(46) + arc(74);
     extra = `<circle cx="34" cy="63" r="4.5" fill="#e8836b" opacity=".6"/><circle cx="86" cy="63" r="4.5" fill="#e8836b" opacity=".6"/>`;
-    if (mood === "cheer") extra += `<path d="M10 14l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6-5-2.8-5 2.8 1.2-5.6-4.2-3.8 5.6-.6zM108 10l2 4.4 4.8.5-3.6 3.2 1 4.8-4.2-2.4-4.2 2.4 1-4.8-3.6-3.2 4.8-.5z" fill="#e3b04b" stroke="${ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
+    if (mood === "cheer") extra += `<path class="twinkle" d="M10 14l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6-5-2.8-5 2.8 1.2-5.6-4.2-3.8 5.6-.6zM108 10l2 4.4 4.8.5-3.6 3.2 1 4.8-4.2-2.4-4.2 2.4 1-4.8-3.6-3.2 4.8-.5z" fill="#e3b04b" stroke="${ink}" stroke-width="1.6" stroke-linejoin="round"/>`;
   } else if (mood === "think") {
-    eyes = eye(46, 3, -3) + eye(74, 3, -3);
+    eyes = `<g class="blink">${eye(46, 3, -3) + eye(74, 3, -3)}</g>`;
     brows = `<path d="M35 38Q46 30 57 37" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linecap="round"/><path d="M63 40Q74 40 85 43" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linecap="round"/>`;
     extra = `<text x="96" y="30" font-size="30" font-weight="800" font-family="Nunito,sans-serif" fill="#e3b04b" stroke="${ink}" stroke-width="1.6" paint-order="stroke">?</text>`;
   } else if (mood === "sad") {
-    eyes = eye(46, 0, 3) + eye(74, 0, 3);
+    eyes = `<g class="blink">${eye(46, 0, 3) + eye(74, 0, 3)}</g>`;
     brows = `<path d="M35 42L56 35" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linecap="round"/><path d="M64 35L85 42" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linecap="round"/>`;
     extra = `<path d="M37 64q-3 6 0 9 3-3 0-9z" fill="#6fb3d9" stroke="${ink}" stroke-width="1.4"/>`;
   } else {
-    eyes = eye(46, 0, 0) + eye(74, 0, 0);
+    eyes = `<g class="blink">${eye(46, 0, 0) + eye(74, 0, 0)}</g>`;
     // подзорная труба в правом крыле
     extra = `<g transform="rotate(-38 90 92)"><rect x="82" y="84" width="34" height="10" rx="3" fill="#c28f1f" stroke="${ink}" stroke-width="2.4"/><rect x="108" y="82" width="9" height="14" rx="2" fill="#8a5d2b" stroke="${ink}" stroke-width="2.4"/><rect x="92" y="84" width="3" height="10" fill="${ink}" opacity=".5"/></g>`;
   }

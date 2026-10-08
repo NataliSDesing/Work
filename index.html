@@ -88,7 +88,7 @@ h2, h3, .fh { font-family: var(--fh); font-weight: 400; letter-spacing: .02em; }
 .nstars { font-size: 30px; text-anchor: middle; fill: var(--gold2); paint-order: stroke; stroke: #1d1611; stroke-width: 6px; }
 .pulse { fill: none; stroke: var(--gold2); stroke-width: 4; transform-box: fill-box; transform-origin: center; animation: pulse 1.8s ease-out infinite; }
 @keyframes pulse { 0% { transform: scale(.8); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
-.route { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 4 16; animation: march 1.4s linear infinite; filter: drop-shadow(0 0 4px rgba(0,0,0,.6)); }
+.route { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 4 16; animation: march 1.4s linear infinite, fadein 1.8s both; filter: drop-shadow(0 0 4px rgba(0,0,0,.6)); }
 .rlabel { font-family: var(--fb); font-weight: 800; font-size: 26px; fill: var(--cream); paint-order: stroke; stroke: #1d1611; stroke-width: 6px; }
 .trail { fill: none; stroke: var(--gold2); stroke-width: 5; stroke-dasharray: 10 14; stroke-linecap: round; opacity: .9; }
 @keyframes march { to { stroke-dashoffset: -40; } }
@@ -189,13 +189,97 @@ textarea { min-height: 90px; font-family: ui-monospace, monospace; font-size: 12
 .bob { animation: bob 2.2s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateY(-7px); } }
 
+
+/* Герои */
+.seg { display: flex; gap: 8px; margin-bottom: 12px; }
+.seg button { flex: 1; padding: 9px 4px; border-radius: 8px; font-weight: 800; background: #2a2016; color: #bba983; border: 2px solid #4a3a28; }
+.seg button.on { background: var(--parch); color: var(--ink); border-color: var(--edge); }
+.hgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.hmini { position: relative; display: block; width: 100%; text-align: center; padding: 8px 8px 10px; color: var(--ink); background: linear-gradient(160deg, #f6e9c8, var(--parch2)); border: 2px solid var(--edge); border-radius: 8px; box-shadow: 0 3px 0 rgba(0,0,0,.4); }
+.hmini .pw { border-radius: 60px 60px 6px 6px; overflow: hidden; border: 2px solid var(--edge); line-height: 0; }
+.hmini .pw svg { width: 100%; height: auto; }
+.hmini b { display: block; font-weight: 800; font-size: 14px; line-height: 1.2; margin-top: 6px; }
+.hmini small { color: var(--ink2); font-size: 12px; }
+.hmini .st { color: #d79a2c; letter-spacing: 1px; font-size: 14px; }
+.hmini.off .pw { filter: grayscale(1) brightness(.45); }
+.hmini.off { opacity: .75; }
+.hmini.pop { animation: pop .5s both; }
+.tier { position: absolute; top: 2px; right: 2px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--fh); font-size: 17px; color: #fff; border: 2px solid #2b1d12; z-index: 1; }
+.tier.S { background: #b4452f; } .tier.A { background: #5b3f8f; } .tier.B { background: #2f7f86; }
+.hcard { position: relative; color: var(--ink); background: linear-gradient(160deg, #f8ecd0, var(--parch) 40%, var(--parch2)); border: 3px solid #7d6234; border-radius: 14px; padding: 18px 16px 16px; margin-top: 12px; box-shadow: 0 6px 0 rgba(0,0,0,.45), inset 0 0 0 5px var(--parch), inset 0 0 0 7px var(--edge), inset 0 0 50px rgba(168,131,71,.3); }
+.hc-title { font-family: var(--fh); font-size: 34px; line-height: 1.05; text-align: center; color: var(--navy); text-wrap: balance; }
+.hc-tags { margin: 10px -4px 14px; padding: 6px 12px; text-align: center; font-weight: 800; font-size: 13px; background: linear-gradient(#e8d6a6, #d8c08a); border: 2px solid var(--edge); border-radius: 4px; }
+.hc-top { display: grid; grid-template-columns: minmax(0, 150px) 1fr; gap: 12px; }
+.hc-port { border-radius: 75px 75px 8px 8px; overflow: hidden; border: 3px solid var(--edge); line-height: 0; box-shadow: 0 3px 0 rgba(0,0,0,.35); align-self: start; }
+.hc-port svg { width: 100%; height: auto; }
+.hc-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.hc-rank { border: 2px solid var(--edge); border-radius: 8px; padding: 8px; text-align: center; background: rgba(255,255,255,.35); }
+.hc-rank .tier { position: static; margin: 0 auto 4px; width: 40px; height: 40px; font-size: 24px; }
+.hc-rank .st { color: #d79a2c; font-size: 20px; letter-spacing: 2px; }
+.hc-rank .st i { font-style: normal; opacity: .3; }
+.hc-rank small { display: block; color: var(--ink2); font-weight: 800; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.hc-info { font-size: 13px; line-height: 1.3; }
+.hc-info div { display: flex; gap: 6px; margin-bottom: 4px; }
+.hc-info span { color: var(--ink2); flex: none; width: 58px; }
+.hc-h { display: flex; align-items: center; gap: 8px; margin: 16px 0 8px; font-family: var(--fh); font-size: 21px; color: var(--navy); }
+.hc-h::before, .hc-h::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--edge)); }
+.hc-h::after { transform: scaleX(-1); }
+.stat { display: grid; grid-template-columns: 26px 1fr 34px; gap: 8px; align-items: center; margin-bottom: 7px; }
+.stat .nm { font-weight: 800; font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+.stat .v { font-weight: 800; text-align: right; }
+.bar { height: 11px; border-radius: 6px; background: rgba(0,0,0,.14); overflow: hidden; }
+.bar i { display: block; height: 100%; background: linear-gradient(#7a88d0, #3a4290); animation: grow .9s ease-out both; }
+@keyframes grow { from { width: 0; } }
+.achs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.achs .md { width: 68px; height: 68px; margin: 0 auto 6px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #5b4a38, #1b130c); border: 3px solid var(--gold); box-shadow: 0 0 0 2px #7d6234; }
+.achs b { display: block; font-size: 13px; line-height: 1.2; }
+.achs small { display: block; font-size: 11.5px; line-height: 1.3; color: var(--ink2); margin-top: 2px; font-weight: 600; }
+.hc-line { margin-top: 14px; padding: 10px 12px; text-align: center; font-weight: 800; background: linear-gradient(#e8d6a6, #d8c08a); border: 2px solid var(--edge); border-radius: 6px; }
+.hc-note { margin-top: 8px; text-align: center; font-size: 11.5px; color: var(--ink2); font-weight: 600; }
+
 /* Нижнее меню */
 nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; background: linear-gradient(#2e2218, #1b130c); border-top: 3px solid var(--gold); padding-bottom: env(safe-area-inset-bottom, 0px); }
 nav.tabs button { flex: 1; padding: 8px 2px; background: none; font-size: 13px; font-weight: 800; color: #bba983; }
 nav.tabs button.on { color: var(--gold2); }
 nav.tabs .ico { display: block; margin: 0 auto 2px; opacity: .7; }
 nav.tabs button.on .ico { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .route, .pulse, .pennant.pop, .shake, .bob { animation: none; } }
+/* Анимации */
+.wrap { animation: rise .35s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.modal > .panel { animation: popin .32s cubic-bezier(.2,1.4,.4,1); }
+@keyframes popin { from { opacity: 0; transform: scale(.85); } }
+.btn.cta { animation: glow 2.2s ease-in-out infinite; }
+@keyframes glow { 50% { box-shadow: 0 4px 0 #5e2113, 0 0 18px rgba(255,170,90,.6); } }
+.bump { animation: bump .5s; }
+@keyframes bump { 40% { transform: scale(1.25); } }
+.star-in { display: inline-block; animation: starin .55s both cubic-bezier(.2,1.6,.4,1); }
+@keyframes starin { from { opacity: 0; transform: scale(0) rotate(-120deg); } }
+.hop { animation: hop 1.3s ease-in-out infinite; }
+@keyframes hop { 0%, 55%, 100% { transform: translateY(0); } 25% { transform: translateY(-14px); } }
+.blink { transform-box: fill-box; transform-origin: center; animation: blink 4.6s infinite; }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.08); } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1.1s ease-in-out infinite; }
+@keyframes twinkle { 50% { transform: scale(1.35) rotate(18deg); opacity: .7; } }
+.coach .owl, .hero-owl .owl { transform-origin: 50% 92%; animation: sway 4s ease-in-out infinite; }
+@keyframes sway { 50% { transform: rotate(3deg); } }
+.hero-owl .owl.bob, .hero-owl .owl.hop { animation-name: none; }
+.ship-bob { transform-box: fill-box; transform-origin: center; animation: shipbob 3.2s ease-in-out infinite; }
+@keyframes shipbob { 50% { transform: translateY(-5px) rotate(2deg); } }
+.wiggle { animation: wiggle 2.8s ease-in-out infinite; }
+@keyframes wiggle { 50% { transform: translate(5px, -4px); } }
+.wave-drift { animation: drift 7s linear infinite; }
+@keyframes drift { to { transform: translateX(-100px); } }
+.beam { animation: beam 2.4s ease-in-out infinite; }
+@keyframes beam { 50% { opacity: .35; } }
+.built { transform-box: fill-box; transform-origin: 50% 100%; animation: built .8s cubic-bezier(.2,1.5,.4,1); }
+@keyframes built { from { transform: scale(.4); opacity: 0; } }
+.node.justdone .hexp { transform-box: fill-box; transform-origin: center; animation: nodepop .9s cubic-bezier(.2,1.6,.4,1); }
+@keyframes nodepop { from { transform: scale(1.6); } }
+@keyframes fadein { from { opacity: 0; } }
+.confetti { position: fixed; inset: 0; z-index: 8; pointer-events: none; overflow: hidden; }
+.cf { position: absolute; top: -14px; width: 9px; height: 14px; animation: fall 2.6s ease-in forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
@@ -205,12 +289,15 @@ nav.tabs button.on .ico { opacity: 1; }
 <script src="icons.js"></script>
 <script src="lessons.js"></script>
 <script src="mascot.js"></script>
+<script src="heroes.js"></script>
 <script>
 // ---------- Состояние ----------
 const KEY = "chronographs.v1";
 const $app = document.getElementById("app");
-const defaults = () => ({ v: 1, name: "", xp: 0, coins: 0, b: { yard: 0, lib: 0, mkt: 0, light: 0 }, read: {}, m: {}, w: {}, cards: [], day: "", streak: 0, reviewDay: "" });
+const defaults = () => ({ v: 1, name: "", xp: 0, coins: 0, heroes: [], b: { yard: 0, lib: 0, mkt: 0, light: 0 }, read: {}, m: {}, w: {}, cards: [], day: "", streak: 0, reviewDay: "" });
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let S = load();
+let justDone = null, justBuilt = null, lastCoins = S.coins;
 
 function load() {
   try {
@@ -256,7 +343,7 @@ const SHIPS = ["Лодка", "Каравелла", "Галеон", "Флагма
 function buy(k) {
   const l = S.b[k];
   if (l >= 3 || S.coins < COST[l]) return;
-  S.coins -= COST[l]; S.b[k] = l + 1; save(); viewPort();
+  S.coins -= COST[l]; S.b[k] = l + 1; justBuilt = k; save(); viewPort();
 }
 
 // ---------- Хроня: подсказки ----------
@@ -311,12 +398,13 @@ function shell(inner) {
     <button class="medal" id="prof" aria-label="Профиль"><b>${L.n}</b></button>
     <div class="who"><b>${esc(S.name)}</b><small>${L.title} · ${S.xp} оч.</small>
       <div class="xp"><i style="width:${L.pct}%"></i></div></div>
-    <div class="chips"><div class="chip">${ico("coin", 22)}${S.coins}</div><div class="chip">${ico("flame", 22)}${S.streak}</div></div>
+    <div class="chips"><div class="chip ${S.coins > lastCoins ? "bump" : ""}">${ico("coin", 22)}${S.coins}</div><div class="chip">${ico("flame", 22)}${S.streak}</div></div>
   </div></header>
   <div class="wrap">${inner}</div>
   <nav class="tabs">
-    ${[["map", "map", "Карта"], ["port", "ship", "Порт"], ["arch", "book", "Архив"], ["cards", "flag", "Вымпелы"]].map(t => `<button data-t="${t[0]}" class="${tab === t[0] ? "on" : ""}">${ico(t[1], 26)}${t[2]}</button>`).join("")}
+    ${[["map", "map", "Карта"], ["port", "ship", "Порт"], ["arch", "book", "Архив"], ["cards", "crown", "Коллекция"]].map(t => `<button data-t="${t[0]}" class="${tab === t[0] ? "on" : ""}">${ico(t[1], 26)}${t[2]}</button>`).join("")}
   </nav>`;
+  lastCoins = S.coins;
   $app.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
   document.getElementById("prof").onclick = () => { tab = "me"; render(); };
 }
@@ -373,21 +461,25 @@ function mapSvg(ch) {
   const land = landPaths.map(d => `<path d="${d}" fill="url(#landg)" stroke="#8f6d38" stroke-width="3" stroke-linejoin="round"/><path d="${d}" fill="url(#hatch)" opacity=".45"/>`).join("");
   const water = WATER.map(p => `<path d="${smooth(p.map(P))}" fill="url(#sea)" stroke="#8f6d38" stroke-width="3"/>`).join("");
   const at = (ll, f) => { const [x, y] = P(ll); return f(x.toFixed(0), y.toFixed(0)); };
-  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const g = (x, y, s, inner, cls = "", delay = 0) => `<g transform="translate(${x} ${y}) scale(${s})"><g class="${cls}" style="animation-delay:${delay}s">${inner}</g></g>`;
   const mount = `<path d="M-16 0L-4-24 4-12 10-20 20 0z" fill="#cdb98a" stroke="#6b5233" stroke-width="2.5" stroke-linejoin="round"/><path d="M-4-24l-5 9 5-3 4 3z" fill="#fff4d6"/>`;
   const tree = `<path d="M0 0v-8" stroke="#6b5233" stroke-width="3"/><path d="M-9-6L0-26 9-6z" fill="#7da35a" stroke="#4a6a35" stroke-width="2" stroke-linejoin="round"/>`;
   const boat = `<path d="M-14 0h28l-5 8h-18z" fill="#8a5d2b" stroke="#2b1d12" stroke-width="2"/><path d="M0-22v22M0-22l12 16H0zM-2-18l-10 12h10z" fill="#fff4d6" stroke="#2b1d12" stroke-width="2"/>`;
   const serpent = `<path d="M-30 6q8-24 16 0t16 0 16 0" fill="none" stroke="#3f6b5a" stroke-width="5" stroke-linecap="round"/><circle cx="26" cy="-4" r="6" fill="#3f6b5a" stroke="#2b1d12" stroke-width="2"/><circle cx="28" cy="-6" r="1.6" fill="#fff"/>`;
   const decor = D.mountains.map(ll => at(ll, (x, y) => g(x, y, sc, mount))).join("")
     + D.forest.map(ll => at(ll, (x, y) => g(x, y, sc, tree + `<g transform="translate(14 4)">${tree}</g><g transform="translate(-13 5)">${tree}</g>`))).join("")
-    + D.ships.map(ll => at(ll, (x, y) => g(x, y, sc, boat))).join("")
-    + at(D.monster, (x, y) => g(x, y, sc, serpent));
+    + D.ships.map((ll, k) => at(ll, (x, y) => g(x, y, sc, boat, "ship-bob", k * 0.7))).join("")
+    + at(D.monster, (x, y) => g(x, y, sc, serpent, "wiggle"));
   let fogHoles = "";
   idxs.forEach(i => {
     const st = missionState(i), m = MISSIONS[i];
     if (st === "locked" || allDone) return;
     const [x, y] = P(PLACES[m.id].ll);
-    fogHoles += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${st === "done" ? cfg.reveal.done : cfg.reveal.open}" fill="url(#hole)"/>`;
+    const rr = st === "done" ? cfg.reveal.done : cfg.reveal.open;
+    let anim = "";
+    if (!RM && st === "done" && m.id === justDone) anim = `<animate attributeName="r" from="${cfg.reveal.open}" to="${rr}" dur="1.8s" begin="0.2s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".2 .8 .3 1"/>`;
+    if (!RM && st === "open" && i > 0 && MISSIONS[i - 1].id === justDone) anim = `<animate attributeName="r" from="0" to="${rr}" dur="1.8s" begin="0.6s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".2 .8 .3 1"/>`;
+    fogHoles += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${anim ? (st === "open" ? 0 : cfg.reveal.open) : rr}" fill="url(#hole)">${anim}</circle>`;
   });
   let routes = "";
   ROUTES.filter(r => S.m[r.mission] && MISSIONS.find(m => m.id === r.mission).chapter === ch).forEach(r => {
@@ -403,7 +495,7 @@ function mapSvg(ch) {
   idxs.slice().sort((a, b) => rank[missionState(a)] - rank[missionState(b)]).forEach(i => {
     const m = MISSIONS[i], st = missionState(i), [x, y] = P(PLACES[m.id].ll);
     const stars = S.m[m.id] ? "★".repeat(S.m[m.id]) : "";
-    nodes += `<g class="node ${st}" data-id="${m.id}" transform="translate(${x.toFixed(0)},${y.toFixed(0)})" ${st === "locked" ? 'aria-disabled="true"' : 'tabindex="0" role="button"'} aria-label="${esc(m.par + ". " + m.title)}">
+    nodes += `<g class="node ${st}${m.id === justDone ? " justdone" : ""}" data-id="${m.id}" transform="translate(${x.toFixed(0)},${y.toFixed(0)})" ${st === "locked" ? 'aria-disabled="true"' : 'tabindex="0" role="button"'} aria-label="${esc(m.par + ". " + m.title)}">
       ${st === "open" ? `<circle class="pulse" r="${R + 6}"/>` : ""}
       <polygon class="hexp" points="${hexPts(R)}"/>
       <text class="par" y="11">${st === "locked" ? "?" : esc(m.par.replace("§ ", "§"))}</text>
@@ -439,7 +531,7 @@ function mapSvg(ch) {
       <radialGradient id="sea" cx=".5" cy=".5" r=".8"><stop offset="0" stop-color="#d4ddd0"/><stop offset="1" stop-color="#a3b7b3"/></radialGradient>
       <linearGradient id="landg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4e8c3"/><stop offset="1" stop-color="#e0ca97"/></linearGradient>
       <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#3b2a1b" stop-opacity="0"/><stop offset="1" stop-color="#3b2a1b" stop-opacity=".45"/></radialGradient>
-      <pattern id="waves" width="64" height="32" patternUnits="userSpaceOnUse"><path d="M0 16q8-9 16 0t16 0 16 0 16 0" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2"/></pattern>
+      <pattern id="waves" width="64" height="32" patternUnits="userSpaceOnUse"><path d="M0 16q8-9 16 0t16 0 16 0 16 0" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2"/>${RM ? "" : '<animateTransform attributeName="patternTransform" type="translate" from="0 0" to="64 0" dur="16s" repeatCount="indefinite"/>'}</pattern>
       <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><path d="M0 0v9" stroke="#a98650" stroke-width="1.2"/></pattern>
       <filter id="fogtex" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="3" seed="7"/><feColorMatrix type="matrix" values="0 0 0 0 .36  0 0 0 0 .28  0 0 0 0 .2  0 0 0 1.5 -.45"/></filter>
       <mask id="fogmask"><rect width="${W}" height="${H}" fill="${allDone ? "#000" : "#fff"}"/>${fogHoles}</mask>
@@ -468,13 +560,14 @@ function viewMap() {
   }
   if (ni !== -1) {
     const m = MISSIONS[ni];
-    h += `<button class="btn red" id="go">Дальше: ${esc(m.par)} · ${esc(m.title)}</button>`;
+    h += `<button class="btn red cta" id="go">Дальше: ${esc(m.par)} · ${esc(m.title)}</button>`;
   } else {
     h += `<div class="panel"><p><b>Все открытые участки карты пройдены.</b> Следующие параграфы появятся позже.</p></div>`;
   }
   const rv = doneCount > 0;
   h += `<div class="panel"><b class="fh" style="font-size:20px">Повторение</b><p class="muted" style="margin-top:6px">5 вопросов из пройденного. Так знания остаются надолго.</p>
     <button class="btn" id="rev" ${rv ? "" : "disabled"}>${rv ? (S.reviewDay === today() ? "Повторить ещё раз" : "Начать повторение") : "Откроется после первой миссии"}</button></div>`;
+  justDone = null;
   shell(h);
   $app.querySelectorAll(".chtabs button").forEach(b => b.onclick = () => { chap = +b.dataset.c; viewMap(); });
   $app.querySelectorAll(".node:not(.locked)").forEach(n => {
@@ -571,7 +664,7 @@ function bLight(L, x) {
   if (!L) return plot(x - 4, "участок");
   const h = 38 + 26 * L, top = 140 - h;
   let s = "";
-  s += `<path d="M${x + 11} ${top - 8}L${x - 60} ${top - 30}V${top + 12}zM${x + 11} ${top - 8}L${x + 80} ${top - 30}V${top + 12}z" fill="rgba(255,236,150,.35)"/>`;
+  s += `<path class="beam" d="M${x + 11} ${top - 8}L${x - 60} ${top - 30}V${top + 12}zM${x + 11} ${top - 8}L${x + 80} ${top - 30}V${top + 12}z" fill="rgba(255,236,150,.35)"/>`;
   s += `<path d="M${x} 140L${x + 5} ${top}h12L${x + 22} 140z" fill="#f6e9c8" stroke="#2b1d12" stroke-width="2.5" stroke-linejoin="round"/>`;
   s += `<path d="M${x + 3} ${140 - h * .3}h16l1.4 -11h-18.8zM${x + 4.4} ${top + h * .25}h13.2l.6 -9h-14.4z" fill="#b4452f" stroke="none"/>`;
   s += `<rect x="${x + 3}" y="${top - 12}" width="16" height="12" fill="#e3b04b" stroke="#2b1d12" stroke-width="2.2"/><path d="M${x} ${top - 12}L${x + 11} ${top - 24}L${x + 22} ${top - 12}z" fill="#8a97a6" stroke="#2b1d12" stroke-width="2.2" stroke-linejoin="round"/>`;
@@ -579,14 +672,15 @@ function bLight(L, x) {
 }
 function portSvg() {
   const b = S.b, ship = [40, 54, 70, 88][b.yard];
+  const bl = (k, s) => `<g class="${justBuilt === k ? "built" : ""}">${s}</g>`;
   return `<svg viewBox="0 0 400 250" role="img" aria-label="Порт">
     <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1c98a"/><stop offset="1" stop-color="#f8ecc9"/></linearGradient></defs>
     <rect width="400" height="150" fill="url(#sky)"/><circle cx="352" cy="40" r="20" fill="#f4d37a" opacity=".9"/>
     <rect y="150" width="400" height="100" fill="#2f7f86"/>
-    <path d="M0 175q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0M0 205q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0M0 235q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#6fb3b9" stroke-width="3" opacity=".6"/>
-    ${bLib(b.lib, 20)}${bYard(b.yard, 108)}${bMkt(b.mkt, 214)}${bLight(b.light, 340)}
+    <g class="wave-drift"><path d="M0 175q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0M0 205q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0M0 235q25-8 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#6fb3b9" stroke-width="3" opacity=".6"/></g>
+    ${bl("lib", bLib(b.lib, 20))}${bl("yard", bYard(b.yard, 108))}${bl("mkt", bMkt(b.mkt, 214))}${bl("light", bLight(b.light, 340))}
     <rect y="140" width="400" height="14" fill="#8a5d2b" stroke="#2b1d12" stroke-width="2.5"/><path d="M40 140v14M100 140v14M160 140v14M220 140v14M280 140v14M340 140v14" stroke="#5b4630" stroke-width="2"/>
-    ${icoAt("ship", 150, 232 - ship, ship)}
+    <g class="ship-bob">${icoAt("ship", 150, 232 - ship, ship)}</g>
     <text x="12" y="238" font-family="Nunito,sans-serif" font-weight="800" font-size="13" fill="#fff4d6" stroke="#12303a" stroke-width="3" paint-order="stroke">${SHIPS[b.yard]}</text>
   </svg>`;
 }
@@ -601,6 +695,7 @@ function viewPort() {
         <div class="bt"><b>${B.name}</b><span class="pips">${[0, 1, 2].map(j => `<i class="${j < l ? "on" : ""}"></i>`).join("")}</span><small>${B.effect}</small></div>
         <button class="btn sm" data-b="${k}" ${max || S.coins < cost ? "disabled" : ""}>${max ? "Максимум" : `${ico("coin", 20)}${cost}`}</button></div>`;
     }).join("")}</div>`);
+  justBuilt = null;
   $app.querySelectorAll("[data-b]").forEach(b => b.onclick = () => buy(b.dataset.b));
 }
 
@@ -716,6 +811,26 @@ function qMatch(q, root, done) {
   draw();
 }
 
+function countUp(id, to) {
+  const el = document.getElementById(id); if (!el) return;
+  const t0 = performance.now(), dur = 1000;
+  (function step(t) {
+    const k = Math.min(1, (t - t0) / dur);
+    el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+function confetti() {
+  const box = document.createElement("div"); box.className = "confetti";
+  const cols = ["#e3b04b", "#b4452f", "#2f7f86", "#5b3f8f", "#4f8a3e", "#f4d37a"];
+  for (let i = 0; i < 36; i++) {
+    const s = document.createElement("i"); s.className = "cf";
+    s.style.cssText = `left:${Math.random() * 100}%;background:${cols[i % cols.length]};animation-delay:${Math.random() * 0.8}s;animation-duration:${2 + Math.random() * 1.4}s;transform:rotate(${Math.random() * 360}deg)`;
+    box.appendChild(s);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 4200);
+}
 const PENNANT = ["#5b3f8f", "#2f7f86", "#b4452f", "#b8841a", "#4f8a3e"];
 function finish() {
   touchStreak();
@@ -726,15 +841,19 @@ function finish() {
     const stars = acc >= .9 ? 3 : acc >= .6 ? 2 : 1;
     const prevStars = S.m[r.mission.id] || 0;
     S.m[r.mission.id] = Math.max(prevStars, stars);
+    if (!prevStars) justDone = r.mission.id;
     const gained = r.mission.cards.filter(c => !S.cards.includes(c));
     S.cards.push(...gained);
+    const newHeroes = HEROES.filter(x => x.m === r.mission.id && !S.heroes.includes(x.id));
+    S.heroes.push(...newHeroes.map(x => x.id));
     if (!prevStars) { S.xp += 20; r.xp += 20; const bonus = 10 + 10 * S.b.yard; S.coins += bonus; r.coins += bonus; }
     chap = r.mission.chapter;
-    extra = `<div class="hero-owl">${owl(stars === 3 ? "cheer" : stars === 2 ? "happy" : "think", 110, "bob")}</div>
-      <div class="stars-big">${"★".repeat(stars)}<span style="opacity:.3">${"★".repeat(3 - stars)}</span></div>
+    extra = `<div class="hero-owl">${owl(stars === 3 ? "cheer" : stars === 2 ? "happy" : "think", 110, stars === 3 ? "hop" : "bob")}</div>
+      <div class="stars-big">${[0, 1, 2].map(j => `<span class="star-in" style="animation-delay:${0.3 + j * 0.3}s;${j < stars ? "" : "opacity:.3"}">★</span>`).join("")}</div>
       <p class="center">С первой попытки: <b>${r.firstTry} из ${r.total}</b></p>
-      ${prevStars ? "" : `<p class="center">На карте открылся участок: <b>${esc(PLACES[r.mission.id].name)}</b></p>`}
-      ${gained.length ? `<b class="fh" style="font-size:20px">Новые вымпелы</b><div class="pennants">${gained.map((c, k) => `<div class="pennant pop" style="--pc:${PENNANT[k % 5]}"><div class="ci">${ico(CARD_ICON[c], 44)}</div><b>${esc(CARDS[c].name)}</b></div>`).join("")}</div>` : ""}`;
+      ${prevStars ? "" : `<p class="center">На карте откроется участок: <b>${esc(PLACES[r.mission.id].name)}</b></p>`}
+      ${newHeroes.length ? `<b class="fh" style="font-size:20px">Новые герои</b><div class="hgrid">${newHeroes.map((x, k) => heroTile(x, true, `animation-delay:${0.9 + k * 0.25}s`)).join("")}</div>` : ""}
+      ${gained.length ? `<b class="fh" style="font-size:20px;display:block;margin-top:14px">Новые вымпелы</b><div class="pennants">${gained.map((c, k) => `<div class="pennant pop" style="--pc:${PENNANT[k % 5]};animation-delay:${1 + k * 0.2}s;animation-fill-mode:backwards"><div class="ci">${ico(CARD_ICON[c], 44)}</div><b>${esc(CARDS[c].name)}</b></div>`).join("")}</div>` : ""}`;
   } else {
     S.reviewDay = today();
     extra = `<div class="hero-owl">${owl("happy", 110, "bob")}</div><p class="center">Повторение — лучший способ ничего не забыть. Правильно с первой попытки: <b>${r.firstTry} из ${r.total}</b></p>`;
@@ -743,22 +862,64 @@ function finish() {
   const L = levelInfo();
   shell(`${banner(r.kind === "mission" ? "Экспедиция вернулась в порт" : "Повторение завершено")}
     <div class="panel">${extra}
-    <div class="reward"><span>${ico("coin", 28)}+${r.coins} монет</span><span>${ico("star", 26)}+${r.xp} оч.</span></div>
+    <div class="reward"><span>${ico("coin", 28)}+<b id="cc">${RM ? r.coins : 0}</b> монет</span><span>${ico("star", 26)}+<b id="cx">${RM ? r.xp : 0}</b> оч.</span></div>
     <p class="center">Уровень ${L.n}: ${L.title}${L.left ? ` (до следующего ${L.left})` : ""}</p>
     <button class="btn red" id="home">К карте</button>
     <button class="btn ghost" id="port">В порт: потратить монеты</button></div>`);
   document.getElementById("home").onclick = () => { tab = "map"; render(); };
   document.getElementById("port").onclick = () => { tab = "port"; render(); };
+  if (!RM) {
+    countUp("cc", r.coins); countUp("cx", r.xp);
+    if (r.kind === "mission" && S.m[r.mission.id] === 3) confetti();
+  }
 }
 
-// ---------- Вымпелы ----------
+// ---------- Коллекция: герои и вымпелы ----------
+let colSub = "heroes";
+const starsHtml = n => "★".repeat(n) + `<i>${"★".repeat(5 - n)}</i>`;
+function heroTile(x, owned, style = "") {
+  if (!owned) return `<div class="hmini off"><div class="pw">${portrait(x.face, 120)}</div><b>???</b><small>откроется в миссии ${esc(MISSIONS.find(m => m.id === x.m).par)}</small></div>`;
+  return `<div class="hmini ${style ? "pop" : ""}" style="${style}"><span class="tier ${TIERS[x.stars]}">${TIERS[x.stars]}</span><div class="pw">${portrait(x.face, 120)}</div><b>${esc(x.name)}</b><span class="st">${"★".repeat(x.stars)}</span></div>`;
+}
 function viewCards() {
-  const ids = Object.keys(CARDS);
-  shell(`${banner("Вымпелы героев: " + S.cards.length + " из " + ids.length)}<div class="pennants">${ids.map((id, k) => {
-    const has = S.cards.includes(id), c = CARDS[id];
-    return `<div class="pennant ${has ? "" : "off"}" style="--pc:${PENNANT[k % 5]}"><div class="ci">${has ? ico(CARD_ICON[id], 44) : ico("help", 44)}</div><b>${has ? esc(c.name) : "???"}</b>
-      <small>${has ? esc(c.text) : "Пройди миссию, чтобы открыть"}</small></div>`;
-  }).join("")}</div>`);
+  const own = S.heroes.length, ids = Object.keys(CARDS);
+  let h = `<div class="seg"><button data-s="heroes" class="${colSub === "heroes" ? "on" : ""}">Герои ${own}/${HEROES.length}</button><button data-s="pennants" class="${colSub === "pennants" ? "on" : ""}">Вымпелы ${S.cards.length}/${ids.length}</button></div>`;
+  if (colSub === "heroes") {
+    h += banner("Герои эпохи") + `<div class="hgrid">${HEROES.map(x => S.heroes.includes(x.id)
+      ? `<button class="hmini" data-h="${x.id}" style="padding:8px 8px 10px"><span class="tier ${TIERS[x.stars]}">${TIERS[x.stars]}</span><div class="pw">${portrait(x.face, 120)}</div><b>${esc(x.name)}</b><span class="st">${"★".repeat(x.stars)}</span></button>`
+      : heroTile(x, false)).join("")}</div>`;
+  } else {
+    h += banner("Вымпелы") + `<div class="pennants">${ids.map((id, k) => {
+      const has = S.cards.includes(id), c = CARDS[id];
+      return `<div class="pennant ${has ? "" : "off"}" style="--pc:${PENNANT[k % 5]}"><div class="ci">${has ? ico(CARD_ICON[id], 44) : ico("help", 44)}</div><b>${has ? esc(c.name) : "???"}</b>
+        <small>${has ? esc(c.text) : "Пройди миссию, чтобы открыть"}</small></div>`;
+    }).join("")}</div>`;
+  }
+  shell(h);
+  $app.querySelectorAll(".seg button").forEach(b => b.onclick = () => { colSub = b.dataset.s; viewCards(); });
+  $app.querySelectorAll("[data-h]").forEach(b => b.onclick = () => viewHero(b.dataset.h));
+}
+function viewHero(id) {
+  const x = heroById(id), kinds = STAT_KINDS[x.kind];
+  shell(`<button class="btn ghost" id="hback" style="margin-top:0">← К коллекции</button>
+  <div class="hcard">
+    <div class="hc-title">${esc(x.name)}</div>
+    <div class="hc-tags">${esc(x.tags)}</div>
+    <div class="hc-top">
+      <div class="hc-port">${portrait(x.face, 150)}</div>
+      <div class="hc-side">
+        <div class="hc-rank"><span class="tier ${TIERS[x.stars]}">${TIERS[x.stars]}</span><div class="st">${starsHtml(x.stars)}</div><small>значимость</small></div>
+        <div class="hc-info"><div><span>Класс</span><b>${esc(x.cls)}</b></div><div><span>Страна</span><b>${esc(x.country)}</b></div><div><span>Эпоха</span><b>${esc(x.era)}</b></div><div><span>Годы</span><b>${esc(x.years)}</b></div></div>
+      </div>
+    </div>
+    <div class="hc-h">Характеристики</div>
+    ${kinds.map((k, j) => `<div class="stat"><div>${ico(k[1], 24)}</div><div><div class="nm">${k[0]}</div><div class="bar"><i style="width:${x.s[j]}%;animation-delay:${j * 0.1}s"></i></div></div><div class="v">${x.s[j]}</div></div>`).join("")}
+    <div class="hc-h">Достижения</div>
+    <div class="achs">${x.ach.map(a => `<div><div class="md">${ico(a.i, 40)}</div><b>${esc(a.h)}</b><small>${esc(a.t)}</small></div>`).join("")}</div>
+    <div class="hc-line">${esc(x.line)}</div>
+    <div class="hc-note">Оценки характеристик придуманы для игры, факты взяты из учебника.</div>
+  </div>`);
+  document.getElementById("hback").onclick = () => { tab = "cards"; colSub = "heroes"; viewCards(); };
 }
 
 // ---------- Профиль и код для учителя ----------
