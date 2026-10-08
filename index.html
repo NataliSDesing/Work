@@ -7,8 +7,21 @@
 <title>Хронографы</title>
 <style>
 :root {
-  --sea: #12304a; --sea2: #1d4a6e; --sand: #f4e9d0; --paper: #fbf5e6; --ink: #2a2118;
-  --gold: #e0a526; --ok: #2e8b57; --bad: #c0392b; --muted: #8a7d66;
+  --sea: #12304a; --sea2: #1d4a6e; --sand: #f4e9d0; --paper: #fbf5e6; --ink: #2a2118; --ink2: #4b4030;
+  --gold: #e0a526; --ok: #2e8b57; --bad: #c0392b; --muted: #8a7d66; --link: #1d4a6e;
+  --line: #d6c79f; --dash: #b9a67c; --soft: #efe3c3; --card2: #ffffff; --locked: #9c9078;
+  --okbg: #dff2e6; --badbg: #f8dedb; --selbg: #e2edf6; --on-gold: #3a2a05;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --sea: #0a1722; --sea2: #2f6d9c; --sand: #101c27; --paper: #1b2a38; --ink: #ece4d2; --ink2: #cfc6b2;
+  --gold: #e8b033; --ok: #4fb87b; --bad: #e0705f; --muted: #9a917e; --link: #8cc4ee;
+  --line: #34475a; --dash: #46607a; --soft: #243545; --card2: #223445; --locked: #53606c;
+  --okbg: #1b3a2b; --badbg: #432622; --selbg: #1f3a52; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --sea: #0a1722; --sea2: #2f6d9c; --sand: #101c27; --paper: #1b2a38; --ink: #ece4d2; --ink2: #cfc6b2;
+  --gold: #e8b033; --ok: #4fb87b; --bad: #e0705f; --muted: #9a917e; --link: #8cc4ee;
+  --line: #34475a; --dash: #46607a; --soft: #243545; --card2: #223445; --locked: #53606c;
+  --okbg: #1b3a2b; --badbg: #432622; --selbg: #1f3a52; color-scheme: dark;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--sand); color: var(--ink); min-height: 100vh; }
@@ -26,52 +39,52 @@ header .row { max-width: 520px; margin: 0 auto; display: flex; align-items: cent
 .streak b { display: block; font-size: 20px; }
 h2 { margin: 22px 0 8px; font-size: 18px; }
 .map { position: relative; margin-top: 18px; padding-left: 8px; }
-.map::before { content: ""; position: absolute; left: 36px; top: 20px; bottom: 20px; border-left: 3px dashed #b9a67c; }
-.port { position: relative; display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; background: var(--paper); border-radius: 16px; padding: 12px; margin-bottom: 14px; box-shadow: 0 2px 0 #d6c79f; color: inherit; }
+.map::before { content: ""; position: absolute; left: 36px; top: 20px; bottom: 20px; border-left: 3px dashed var(--dash); }
+.port { position: relative; display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; background: var(--paper); border-radius: 16px; padding: 12px; margin-bottom: 14px; box-shadow: 0 2px 0 var(--line); color: inherit; }
 .port .ico { width: 56px; height: 56px; border-radius: 50%; background: var(--sea2); color: #fff; display: grid; place-items: center; font-size: 26px; flex: none; z-index: 1; border: 3px solid var(--paper); }
 .port.done .ico { background: var(--ok); }
 .port.locked { opacity: .55; }
-.port.locked .ico { background: #9c9078; }
+.port.locked .ico { background: var(--locked); }
 .port .t b { display: block; line-height: 1.25; }
 .port .t small { color: var(--muted); }
 .stars { letter-spacing: 2px; color: var(--gold); }
 .btn { display: block; width: 100%; padding: 14px 16px; border-radius: 14px; background: var(--sea2); color: #fff; font-weight: 600; font-size: 16px; text-align: center; margin-top: 10px; }
-.btn.gold { background: var(--gold); color: #3a2a05; }
-.btn.ghost { background: transparent; color: var(--sea2); border: 2px solid var(--sea2); }
+.btn.gold { background: var(--gold); color: var(--on-gold); }
+.btn.ghost { background: transparent; color: var(--link); border: 2px solid var(--link); }
 .btn:disabled { opacity: .4; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.card-box { background: var(--paper); border-radius: 16px; padding: 14px; box-shadow: 0 2px 0 #d6c79f; margin-top: 14px; }
-.story { font-style: italic; color: #4b4030; }
+.card-box { background: var(--paper); border-radius: 16px; padding: 14px; box-shadow: 0 2px 0 var(--line); margin-top: 14px; }
+.story { font-style: italic; color: var(--ink2); }
 .play-top { display: flex; align-items: center; gap: 10px; padding: 14px 0 6px; }
-.play-top .x { background: none; font-size: 22px; color: var(--sea2); }
-.play-top .bar { flex: 1; background: #d6c79f; margin: 0; }
+.play-top .x { background: none; font-size: 22px; color: var(--link); }
+.play-top .bar { flex: 1; background: var(--line); margin: 0; }
 .play-top .bar i { background: var(--ok); }
 .q { font-size: 19px; font-weight: 600; line-height: 1.3; margin: 16px 0; }
-.opt { display: block; width: 100%; text-align: left; background: var(--paper); border: 2px solid #d6c79f; border-radius: 14px; padding: 14px; margin-bottom: 10px; font-size: 16px; color: inherit; }
-.opt.right { border-color: var(--ok); background: #dff2e6; }
-.opt.wrong { border-color: var(--bad); background: #f8dedb; }
-.opt.sel { border-color: var(--sea2); background: #e2edf6; }
+.opt { display: block; width: 100%; text-align: left; background: var(--paper); border: 2px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px; font-size: 16px; color: inherit; }
+.opt.right { border-color: var(--ok); background: var(--okbg); }
+.opt.wrong { border-color: var(--bad); background: var(--badbg); }
+.opt.sel { border-color: var(--sea2); background: var(--selbg); }
 .opt.used { opacity: .35; }
 .opt.dim { opacity: .55; }
-.seq { min-height: 54px; background: #efe3c3; border-radius: 14px; padding: 8px; margin-bottom: 14px; }
-.seq .opt { margin: 0 0 6px; padding: 10px 12px; border-color: var(--sea2); background: #fff; }
+.seq { min-height: 54px; background: var(--soft); border-radius: 14px; padding: 8px; margin-bottom: 14px; }
+.seq .opt { margin: 0 0 6px; padding: 10px 12px; border-color: var(--sea2); background: var(--card2); }
 .seq .ph { color: var(--muted); padding: 8px; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .cols .opt { padding: 10px; font-size: 14px; margin: 0 0 10px; }
 .fb { border-radius: 14px; padding: 14px; margin-top: 12px; }
-.fb.ok { background: #dff2e6; border-left: 6px solid var(--ok); }
-.fb.no { background: #f8dedb; border-left: 6px solid var(--bad); }
+.fb.ok { background: var(--okbg); border-left: 6px solid var(--ok); }
+.fb.no { background: var(--badbg); border-left: 6px solid var(--bad); }
 .fb b { display: block; margin-bottom: 4px; }
 .center { text-align: center; }
 .big { font-size: 64px; line-height: 1.1; margin: 20px 0 4px; }
 .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
-.collect { background: var(--paper); border-radius: 14px; padding: 12px; text-align: center; box-shadow: 0 2px 0 #d6c79f; }
+.collect { background: var(--paper); border-radius: 14px; padding: 12px; text-align: center; box-shadow: 0 2px 0 var(--line); }
 .collect .ci { font-size: 36px; }
-.collect small { display: block; color: #4b4030; text-align: left; margin-top: 6px; font-size: 12.5px; line-height: 1.35; }
+.collect small { display: block; color: var(--ink2); text-align: left; margin-top: 6px; font-size: 12.5px; line-height: 1.35; }
 .collect.off { opacity: .5; filter: grayscale(1); }
 .modal { position: fixed; inset: 0; background: rgba(10,25,40,.6); display: grid; place-items: center; padding: 20px; z-index: 5; }
-.modal > div { background: var(--paper); border-radius: 18px; padding: 20px; max-width: 420px; width: 100%; }
-input[type=text], textarea { width: 100%; font: inherit; padding: 12px; border-radius: 12px; border: 2px solid #d6c79f; background: #fff; }
+.modal > div { color: var(--ink); background: var(--paper); border-radius: 18px; padding: 20px; max-width: 420px; width: 100%; }
+input[type=text], textarea { width: 100%; font: inherit; padding: 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--card2); }
 textarea { min-height: 90px; font-family: monospace; font-size: 12px; }
 .pop { animation: pop .35s; }
 @keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
@@ -120,6 +133,16 @@ function levelInfo() {
 const allQuestions = () => MISSIONS.flatMap(m => m.questions);
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ---------- Подтверждение внутри страницы ----------
+function ask(text, yes, onYes) {
+  const m = document.createElement("div");
+  m.className = "modal";
+  m.innerHTML = `<div><p>${esc(text)}</p><div class="grid2"><button class="btn ghost" id="no">Отмена</button><button class="btn gold" id="yes">${esc(yes)}</button></div></div>`;
+  document.body.appendChild(m);
+  m.querySelector("#no").onclick = () => m.remove();
+  m.querySelector("#yes").onclick = () => { m.remove(); onYes(); };
+}
 
 // ---------- Каркас ----------
 let tab = "map";
@@ -219,7 +242,7 @@ function nextQ() {
   const head = `<div class="play-top"><button class="x" id="quit">✕</button>
     <div class="bar"><i style="width:${Math.min(100, run.answered / run.total * 100)}%"></i></div></div>`;
   shell(head + `<div class="q">${retry ? "🔁 Ещё раз. " : ""}${esc(q.q)}</div><div id="body"></div><div id="fb"></div>`);
-  document.getElementById("quit").onclick = () => { if (confirm("Выйти? Прогресс этой миссии не сохранится.")) { run = null; render(); } };
+  document.getElementById("quit").onclick = () => ask("Выйти? Прогресс этой миссии не сохранится.", "Выйти", () => { run = null; render(); });
   const body = document.getElementById("body");
   ({ choice: qChoice, tf: qTf, order: qOrder, match: qMatch })[q.t](q, body, ok => answer(q, ok));
 }
@@ -348,7 +371,7 @@ function viewMe() {
     catch (e) { document.getElementById("code").select(); document.execCommand("copy"); }
   };
   document.getElementById("reset").onclick = () => {
-    if (confirm("Всё удалить: очки, карточки, имя?")) { localStorage.removeItem(KEY); S = load(); tab = "map"; render(); }
+    ask("Всё удалить: очки, карточки, имя?", "Удалить", () => { try { localStorage.removeItem(KEY); } catch (e) {} S = load(); tab = "map"; render(); });
   };
 }
 
