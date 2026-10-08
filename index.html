@@ -176,13 +176,26 @@ h2, h3, .fh { font-family: var(--fh); font-weight: 400; letter-spacing: .02em; }
 input[type=text], textarea { width: 100%; font: inherit; padding: 12px; color: var(--ink); background: #fffaf0; border: 2px solid var(--edge); border-radius: 6px; }
 textarea { min-height: 90px; font-family: ui-monospace, monospace; font-size: 12px; }
 
+
+/* Талисман Хроня */
+.coach { display: flex; gap: 8px; align-items: flex-end; margin: 12px 0; }
+.coach > div:first-child { flex: none; }
+.bubble { position: relative; flex: 1; min-width: 0; color: var(--ink); background: linear-gradient(#fbf1d6, #f0e1bd); border: 2px solid var(--edge); border-radius: 12px; padding: 10px 12px; line-height: 1.4; font-size: 15px; box-shadow: 0 3px 0 rgba(0,0,0,.35); }
+.bubble::before { content: ""; position: absolute; left: -8px; bottom: 18px; width: 13px; height: 13px; background: #f6e9c8; border-left: 2px solid var(--edge); border-bottom: 2px solid var(--edge); transform: rotate(45deg); }
+.fbwrap { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; }
+.fbwrap > div:first-child { flex: none; padding-top: 4px; }
+.fbwrap .fb { flex: 1; min-width: 0; margin-top: 0; }
+.hero-owl { text-align: center; margin-bottom: 4px; }
+.bob { animation: bob 2.2s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-7px); } }
+
 /* Нижнее меню */
 nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; background: linear-gradient(#2e2218, #1b130c); border-top: 3px solid var(--gold); padding-bottom: env(safe-area-inset-bottom, 0px); }
 nav.tabs button { flex: 1; padding: 8px 2px; background: none; font-size: 13px; font-weight: 800; color: #bba983; }
 nav.tabs button.on { color: var(--gold2); }
 nav.tabs .ico { display: block; margin: 0 auto 2px; opacity: .7; }
 nav.tabs button.on .ico { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .route, .pulse, .pennant.pop, .shake { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .route, .pulse, .pennant.pop, .shake, .bob { animation: none; } }
 </style>
 </head>
 <body>
@@ -191,6 +204,7 @@ nav.tabs button.on .ico { opacity: 1; }
 <script src="map.js"></script>
 <script src="icons.js"></script>
 <script src="lessons.js"></script>
+<script src="mascot.js"></script>
 <script>
 // ---------- Состояние ----------
 const KEY = "chronographs.v1";
@@ -245,6 +259,23 @@ function buy(k) {
   S.coins -= COST[l]; S.b[k] = l + 1; save(); viewPort();
 }
 
+// ---------- Хроня: подсказки ----------
+const coach = (mood, text, size = 72) => `<div class="coach"><div>${owl(mood, size)}</div><div class="bubble">${text}</div></div>`;
+const canUpgrade = () => Object.keys(S.b).some(k => S.b[k] < 3 && S.coins >= COST[S.b[k]]);
+function coachInfo() {
+  const ni = nextIndex(), n = esc(S.name);
+  let mood, text;
+  if (ni === -1) { mood = "cheer"; text = `Мы открыли всё, что есть в учебнике на сейчас, ${n}! Повтори пройденное, чтобы знания остались.`; }
+  else {
+    const m = MISSIONS[ni];
+    if (!Object.keys(S.m).length && !S.read[m.id]) { mood = "guide"; text = `Привет, ${n}! Я Хроня, твой штурман. Нажми на красную точку: сначала прочитаем материал, потом пройдём испытание.`; }
+    else if (!S.read[m.id]) { mood = "guide"; text = `Следующая остановка: ${esc(m.par)}. Сначала прочитаем материал, потом испытание.`; }
+    else { mood = "happy"; text = `Материал по ${esc(m.par)} уже изучен. Самое время для испытания!`; }
+  }
+  if (canUpgrade()) text += " В порту хватит монет на улучшение.";
+  return [mood, text];
+}
+
 // ---------- Подтверждение и факты ----------
 function ask(text, yes, onYes) {
   const m = document.createElement("div");
@@ -262,7 +293,7 @@ function showFact() {
   document.querySelectorAll(".modal").forEach(x => x.remove());
   const m = document.createElement("div");
   m.className = "modal";
-  m.innerHTML = `<div class="panel center"><div class="cap">Судовой журнал · факт дня</div><div class="factico">${ico(f.i, 54)}</div>
+  m.innerHTML = `<div class="panel center"><div class="cap">Хроня рассказывает</div><div class="hero-owl">${owl("guide", 96)}</div>
     <p class="fact">${esc(f.t)}</p>
     <div class="grid2"><button class="btn ghost" id="more">Ещё факт</button><button class="btn red" id="ok">В путь</button></div></div>`;
   document.body.appendChild(m);
@@ -302,7 +333,8 @@ function render() {
 function askName() {
   $app.innerHTML = `<div class="wrap" style="padding-top:36px">
     ${banner("Хронографы")}
-    <div class="panel"><p class="story">Машина времени сломалась. Вы — капитан экспедиционной компании. Изучайте материалы, отправляйтесь в плавания, открывайте карту и стройте свой порт. Как тебя зовут, капитан?</p>
+    <div class="hero-owl">${owl("guide", 130, "bob")}</div>
+    <div class="panel" style="margin-top:6px"><p class="story">Я Хроня, штурман. Машина времени сломалась, и починить её сможет только капитан экспедиционной компании. Изучай материалы, отправляйся в плавания, открывай карту и строй свой порт. Как тебя зовут, капитан?</p>
     <input type="text" id="nm" placeholder="Имя и первая буква фамилии" maxlength="30" autocomplete="off">
     <button class="btn red" id="go">В путь</button></div></div>`;
   const go = () => { const v = document.getElementById("nm").value.trim(); if (v) { S.name = v; save(); render(); showFact(); } };
@@ -332,12 +364,24 @@ function curve(pts) {
 }
 
 function mapSvg(ch) {
-  const cfg = MAPS[ch];
+  const cfg = MAPS[ch], D = DECOR[ch], sc = ch === 1 ? 1.3 : 1.9, W = cfg.w, H = cfg.h;
   const P = ll => cfg.proj(ll[0], ll[1]);
   const idxs = MISSIONS.map((m, i) => i).filter(i => MISSIONS[i].chapter === ch);
   const allDone = idxs.every(i => S.m[MISSIONS[i].id]);
-  const land = LAND.map(p => `<path d="${smooth(p.map(P))}" fill="#ecdcb0" stroke="#a98650" stroke-width="3" stroke-linejoin="round"/>`).join("");
-  const water = WATER.map(p => `<path d="${smooth(p.map(P))}" fill="#c9cfc0" stroke="#a98650" stroke-width="3"/>`).join("");
+  const landPaths = LAND.map(p => smooth(p.map(P)));
+  const shore = landPaths.map(d => `<path d="${d}" fill="none" stroke="#eef4ee" stroke-width="24" stroke-opacity=".45" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#dbe6e0" stroke-width="12" stroke-opacity=".75" stroke-linejoin="round"/>`).join("");
+  const land = landPaths.map(d => `<path d="${d}" fill="url(#landg)" stroke="#8f6d38" stroke-width="3" stroke-linejoin="round"/><path d="${d}" fill="url(#hatch)" opacity=".45"/>`).join("");
+  const water = WATER.map(p => `<path d="${smooth(p.map(P))}" fill="url(#sea)" stroke="#8f6d38" stroke-width="3"/>`).join("");
+  const at = (ll, f) => { const [x, y] = P(ll); return f(x.toFixed(0), y.toFixed(0)); };
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const mount = `<path d="M-16 0L-4-24 4-12 10-20 20 0z" fill="#cdb98a" stroke="#6b5233" stroke-width="2.5" stroke-linejoin="round"/><path d="M-4-24l-5 9 5-3 4 3z" fill="#fff4d6"/>`;
+  const tree = `<path d="M0 0v-8" stroke="#6b5233" stroke-width="3"/><path d="M-9-6L0-26 9-6z" fill="#7da35a" stroke="#4a6a35" stroke-width="2" stroke-linejoin="round"/>`;
+  const boat = `<path d="M-14 0h28l-5 8h-18z" fill="#8a5d2b" stroke="#2b1d12" stroke-width="2"/><path d="M0-22v22M0-22l12 16H0zM-2-18l-10 12h10z" fill="#fff4d6" stroke="#2b1d12" stroke-width="2"/>`;
+  const serpent = `<path d="M-30 6q8-24 16 0t16 0 16 0" fill="none" stroke="#3f6b5a" stroke-width="5" stroke-linecap="round"/><circle cx="26" cy="-4" r="6" fill="#3f6b5a" stroke="#2b1d12" stroke-width="2"/><circle cx="28" cy="-6" r="1.6" fill="#fff"/>`;
+  const decor = D.mountains.map(ll => at(ll, (x, y) => g(x, y, sc, mount))).join("")
+    + D.forest.map(ll => at(ll, (x, y) => g(x, y, sc, tree + `<g transform="translate(14 4)">${tree}</g><g transform="translate(-13 5)">${tree}</g>`))).join("")
+    + D.ships.map(ll => at(ll, (x, y) => g(x, y, sc, boat))).join("")
+    + at(D.monster, (x, y) => g(x, y, sc, serpent));
   let fogHoles = "";
   idxs.forEach(i => {
     const st = missionState(i), m = MISSIONS[i];
@@ -349,7 +393,7 @@ function mapSvg(ch) {
   ROUTES.filter(r => S.m[r.mission] && MISSIONS.find(m => m.id === r.mission).chapter === ch).forEach(r => {
     const pts = r.pts.map(P), e = pts[pts.length - 1];
     const right = e[0] > 760;
-    routes += `<path class="route" d="${curve(pts)}" stroke="${r.color}"/>${r.name ? `<text class="rlabel" x="${(e[0] + (right ? 30 : 0)).toFixed(0)}" y="${(e[1] + 56).toFixed(0)}" text-anchor="${right ? "end" : "middle"}">${esc(r.name)}</text>` : ""}`;
+    routes += `<path class="route" d="${curve(pts)}" stroke="${r.color}"/>${r.name ? `<text class="rlabel" x="${(e[0] + (right ? -4 : 0)).toFixed(0)}" y="${(e[1] + 56).toFixed(0)}" text-anchor="${right ? "end" : "middle"}">${esc(r.name)}</text>` : ""}`;
   });
   const reached = idxs.filter(i => missionState(i) !== "locked").map(i => P(PLACES[MISSIONS[i].id].ll));
   const trail = reached.length > 1 ? `<path class="trail" d="${reached.map((p, k) => (k ? "L" : "M") + p[0].toFixed(0) + " " + p[1].toFixed(0)).join("")}"/>` : "";
@@ -367,16 +411,44 @@ function mapSvg(ch) {
       ${st !== "locked" ? `<text class="nlabel" y="${R + 40}">${esc(PLACES[m.id].name)}</text>` : ""}
     </g>`;
   });
-  return `<svg viewBox="0 0 ${cfg.w} ${cfg.h}" role="img" aria-label="Карта главы ${ch}">
+  // Хроня стоит рядом с текущей точкой (или радуется, если глава пройдена) на свободном месте
+  let mascot = "";
+  const cur = idxs.find(i => missionState(i) === "open");
+  const anchorIdx = cur !== undefined ? cur : (allDone ? idxs[idxs.length - 1] : undefined);
+  if (anchorIdx !== undefined) {
+    const pos = P(PLACES[MISSIONS[anchorIdx].id].ll);
+    const others = idxs.filter(i => i !== anchorIdx).map(i => P(PLACES[MISSIONS[i].id].ll));
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    let best = null;
+    [[-150, -150], [50, -150], [-150, 30], [50, 30], [-60, -190], [-60, 70], [-200, -60], [100, -60]].forEach(([dx, dy]) => {
+      const ox = clamp(pos[0] + dx, 28, W - 140), oy = clamp(pos[1] + dy, 28, H - 150), cx = ox + 56, cy = oy + 60;
+      let pen = others.reduce((s, q) => s + (Math.hypot(q[0] - cx, q[1] - cy) < 120 ? 2 : 0), 0);
+      if (Math.hypot(pos[0] - cx, pos[1] - cy) < 95) pen += 3;
+      if (Math.hypot(W - 88 - cx, 92 - cy) < 130) pen += 2;
+      if (!best || pen < best.pen) best = { pen, ox, oy };
+    });
+    mascot = `<g class="bob">${owlAt(cur !== undefined ? "guide" : "cheer", best.ox.toFixed(0), best.oy.toFixed(0), 112)}</g>`;
+  }
+  const corner = (x, y) => `<path d="M${x - 13} ${y}L${x} ${y - 13}L${x + 13} ${y}L${x} ${y + 13}Z" fill="#e3b04b" stroke="#2b1d12" stroke-width="2.5"/>`;
+  const frame = `<rect x="6" y="6" width="${W - 12}" height="${H - 12}" fill="none" stroke="#6b4a22" stroke-width="9"/><rect x="17" y="17" width="${W - 34}" height="${H - 34}" fill="none" stroke="#e3b04b" stroke-width="2.5"/>${corner(17, 17)}${corner(W - 17, 17)}${corner(17, H - 17)}${corner(W - 17, H - 17)}`;
+  const rose = `<g transform="translate(${W - 88},92)"><circle r="56" fill="rgba(246,233,200,.78)" stroke="#8f6d38" stroke-width="3"/><circle r="46" fill="none" stroke="#8f6d38" stroke-width="1.5" stroke-dasharray="3 4"/><polygon points="0,-50 8,-8 50,0 8,8 0,50 -8,8 -50,0 -8,-8" fill="#b4452f" stroke="#2b1d12" stroke-width="2.5" stroke-linejoin="round"/><polygon points="0,-30 22,-22 30,0 22,22 0,30 -22,22 -30,0 -22,-22" fill="none" stroke="#8f6d38" stroke-width="1.5"/><circle r="5" fill="#e3b04b" stroke="#2b1d12" stroke-width="2"/><text y="-60" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="28" fill="#fff4d6" stroke="#1d1611" stroke-width="5" paint-order="stroke">С</text></g>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Карта главы ${ch}">
     <defs>
       <radialGradient id="hole"><stop offset="0" stop-color="#000"/><stop offset=".6" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>
       <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4d37a"/><stop offset="1" stop-color="#d79a2c"/></linearGradient>
-      <mask id="fogmask"><rect width="${cfg.w}" height="${cfg.h}" fill="${allDone ? "#000" : "#fff"}"/>${fogHoles}</mask>
+      <radialGradient id="sea" cx=".5" cy=".5" r=".8"><stop offset="0" stop-color="#d4ddd0"/><stop offset="1" stop-color="#a3b7b3"/></radialGradient>
+      <linearGradient id="landg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4e8c3"/><stop offset="1" stop-color="#e0ca97"/></linearGradient>
+      <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#3b2a1b" stop-opacity="0"/><stop offset="1" stop-color="#3b2a1b" stop-opacity=".45"/></radialGradient>
+      <pattern id="waves" width="64" height="32" patternUnits="userSpaceOnUse"><path d="M0 16q8-9 16 0t16 0 16 0 16 0" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="2"/></pattern>
+      <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><path d="M0 0v9" stroke="#a98650" stroke-width="1.2"/></pattern>
+      <filter id="fogtex" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="3" seed="7"/><feColorMatrix type="matrix" values="0 0 0 0 .36  0 0 0 0 .28  0 0 0 0 .2  0 0 0 1.5 -.45"/></filter>
+      <mask id="fogmask"><rect width="${W}" height="${H}" fill="${allDone ? "#000" : "#fff"}"/>${fogHoles}</mask>
     </defs>
-    <rect width="${cfg.w}" height="${cfg.h}" fill="#c9cfc0"/>${land}${water}
-    <rect width="${cfg.w}" height="${cfg.h}" fill="#1c150f" fill-opacity=".94" mask="url(#fogmask)"/>
-    ${trail}${routes}${nodes}
-    <g transform="translate(${cfg.w - 70},62)" opacity=".85"><polygon points="0,-44 8,-8 44,0 8,8 0,44 -8,8 -44,0 -8,-8" fill="#e3b04b" stroke="#2b1d12" stroke-width="3"/><text y="-52" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="26" fill="#fff4d6" stroke="#1d1611" stroke-width="5" paint-order="stroke">С</text></g>
+    <rect width="${W}" height="${H}" fill="url(#sea)"/><rect width="${W}" height="${H}" fill="url(#waves)"/>
+    ${shore}${land}${water}${decor}
+    <g mask="url(#fogmask)"><rect width="${W}" height="${H}" fill="#1c150f" fill-opacity=".94"/><rect width="${W}" height="${H}" filter="url(#fogtex)" opacity=".7"/></g>
+    <rect width="${W}" height="${H}" fill="url(#vig)" pointer-events="none"/>
+    ${trail}${routes}${nodes}${mascot}${rose}${frame}
   </svg>`;
 }
 
@@ -386,6 +458,8 @@ function viewMap() {
   const doneCount = Object.keys(S.m).length;
   let h = `<div class="chtabs">${[1, 2, 3].map(c => `<button data-c="${c}" class="${chap === c ? "on" : ""}" ${c === 3 ? "disabled" : ""}>Глава ${["I", "II", "III"][c - 1]}</button>`).join("")}</div>`;
   h += banner(CHAPTERS[chap]);
+  const ci = coachInfo();
+  if (chap !== 3) h += coach(ci[0], ci[1]);
   if (chap === 3) {
     h += `<div class="panel"><p class="story">Эта часть карты пока закрыта. Она откроется, когда мы дойдём до стран Азии и Африки: Османская империя, Индия, Китай, Япония и Африка.</p></div>`;
   } else {
@@ -437,7 +511,7 @@ function viewLesson(id, mode, k) {
     <div class="dots">${cards.map((_, j) => `<i class="${j === k ? "on" : j < k ? "past" : ""}"></i>`).join("")}</div>
     <div class="grid2"><button class="btn ghost" id="prev" ${k === 0 ? "disabled" : ""}>Назад</button>
     <button class="btn ${last ? "red" : ""}" id="next">${last ? (mode === "prep" ? "К испытанию" : "Закрыть") : "Дальше"}</button></div>
-    ${mode === "prep" && !last ? `<p class="muted center" style="margin:12px 0 0;font-size:14px">Прочитай все карточки: потом будет испытание.</p>` : ""}</div>`);
+    </div>${mode === "prep" ? coach(last ? "happy" : "guide", last ? "Готов? Нажимай «К испытанию»: в пути понадобится всё, что ты прочитал." : k === 0 ? "Читай внимательно: потом будет испытание. Я буду рядом." : "Запоминай главное: в испытании это пригодится.") : ""}`);
   document.getElementById("prev").onclick = () => viewLesson(id, mode, k - 1);
   document.getElementById("next").onclick = () => {
     if (!last) return viewLesson(id, mode, k + 1);
@@ -518,6 +592,7 @@ function portSvg() {
 }
 function viewPort() {
   shell(`${banner("Порт капитана " + S.name)}
+    ${coach(canUpgrade() ? "cheer" : "think", canUpgrade() ? "Монет хватает! Что улучшим в порту?" : "Верные ответы и новые материалы приносят монеты. Копим на улучшение здания.")}
     <div class="portbox">${portSvg()}</div>
     <div class="panel"><p class="muted" style="margin-bottom:12px">Монеты приносят верные ответы и изученные материалы. Улучшай здания, чтобы получать больше монет и подсказок.</p>
     ${Object.keys(BUILD).map(k => {
@@ -572,7 +647,7 @@ function answer(q, ok) {
   else { run.queue.push(run.queue.shift()); }
   save();
   const fb = document.getElementById("fb");
-  fb.innerHTML = `<div class="fb ${ok ? "ok" : "no"} pop"><b>${ok ? `Верно! +${coins} монет` : "Не совсем"}</b>${esc(q.e)}</div>
+  fb.innerHTML = `<div class="fbwrap"><div>${owl(ok ? "happy" : "think", 56)}</div><div class="fb ${ok ? "ok" : "no"} pop"><b>${ok ? `Верно! +${coins} монет` : "Не совсем"}</b>${esc(q.e)}</div></div>
     <button class="btn red" id="next">Дальше</button>`;
   document.getElementById("next").onclick = nextQ;
   fb.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -655,13 +730,14 @@ function finish() {
     S.cards.push(...gained);
     if (!prevStars) { S.xp += 20; r.xp += 20; const bonus = 10 + 10 * S.b.yard; S.coins += bonus; r.coins += bonus; }
     chap = r.mission.chapter;
-    extra = `<div class="stars-big">${"★".repeat(stars)}<span style="opacity:.3">${"★".repeat(3 - stars)}</span></div>
+    extra = `<div class="hero-owl">${owl(stars === 3 ? "cheer" : stars === 2 ? "happy" : "think", 110, "bob")}</div>
+      <div class="stars-big">${"★".repeat(stars)}<span style="opacity:.3">${"★".repeat(3 - stars)}</span></div>
       <p class="center">С первой попытки: <b>${r.firstTry} из ${r.total}</b></p>
       ${prevStars ? "" : `<p class="center">На карте открылся участок: <b>${esc(PLACES[r.mission.id].name)}</b></p>`}
       ${gained.length ? `<b class="fh" style="font-size:20px">Новые вымпелы</b><div class="pennants">${gained.map((c, k) => `<div class="pennant pop" style="--pc:${PENNANT[k % 5]}"><div class="ci">${ico(CARD_ICON[c], 44)}</div><b>${esc(CARDS[c].name)}</b></div>`).join("")}</div>` : ""}`;
   } else {
     S.reviewDay = today();
-    extra = `<div class="emblem">${ico("book", 56)}</div><p class="center">Повторение — лучший способ ничего не забыть. Правильно с первой попытки: <b>${r.firstTry} из ${r.total}</b></p>`;
+    extra = `<div class="hero-owl">${owl("happy", 110, "bob")}</div><p class="center">Повторение — лучший способ ничего не забыть. Правильно с первой попытки: <b>${r.firstTry} из ${r.total}</b></p>`;
   }
   save();
   const L = levelInfo();
