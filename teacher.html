@@ -59,8 +59,8 @@ document.getElementById("clear").onclick = () => {
 function draw() {
   const kids = Object.values(R).sort((a, b) => b.x - a.x);
   const total = kids.reduce((s, k) => s + k.x, 0);
-  const goal = Math.max(1, kids.length) * 300;
-  document.getElementById("ship").innerHTML = `<b>Общий корабль класса</b><p>${total} очков из ${goal} (цель — по 300 на ученика)</p>
+  const goal = Math.max(1, kids.length) * 800;
+  document.getElementById("ship").innerHTML = `<b>Общий корабль класса</b><p>${total} очков из ${goal} (цель — по 800 на ученика)</p>
     <div class="bar"><i style="width:${Math.min(100, total / goal * 100)}%"></i></div>
     <p><small>Когда шкала заполнится, откройте классу общую награду.</small></p>`;
 
