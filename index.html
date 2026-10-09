@@ -290,14 +290,16 @@ nav.tabs button.on .ico { opacity: 1; }
 <script src="lessons.js"></script>
 <script src="mascot.js"></script>
 <script src="heroes.js"></script>
+<script src="auth.js"></script>
 <script>
 // ---------- Состояние ----------
-const KEY = "chronographs.v1";
+const LEGACY_KEY = "chronographs.v1";
+let KEY = LEGACY_KEY, ACC = null;
 const $app = document.getElementById("app");
 const defaults = () => ({ v: 1, name: "", xp: 0, coins: 0, heroes: [], b: { yard: 0, lib: 0, mkt: 0, light: 0 }, read: {}, m: {}, w: {}, cards: [], day: "", streak: 0, reviewDay: "" });
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let S = load();
-let justDone = null, justBuilt = null, lastCoins = S.coins;
+let S = defaults();
+let justDone = null, justBuilt = null, lastCoins = 0;
 
 function load() {
   try {
@@ -324,6 +326,34 @@ function levelInfo() {
   const pct = next ? Math.round((S.xp - cur.xp) / (next.xp - cur.xp) * 100) : 100;
   return { n: i + 1, title: cur.title, pct, left: next ? next.xp - S.xp : 0 };
 }
+
+// ---------- Аккаунты: вход по коду ----------
+const keyFor = id => id === "demo" ? LEGACY_KEY : "chronographs.acc." + id;
+function setAccount(id, name) {
+  ACC = id; KEY = keyFor(id);
+  try { localStorage.setItem("chronographs.cur", id); } catch (e) {}
+  S = load(); if (name) S.name = name;
+  tab = "map"; chap = null; lastCoins = S.coins; save();
+}
+function logout() {
+  ACC = null; S = defaults(); tab = "map"; chap = null; lastCoins = 0;
+  try { localStorage.removeItem("chronographs.cur"); } catch (e) {}
+  render();
+}
+function bootAccount() {
+  const m = (location.hash || "").match(/k=([0-9A-Za-z\-]+)/);
+  if (m) {
+    const r = codeToName(m[1]);
+    if (r.ok) { setAccount(r.id, r.name); try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} return; }
+  }
+  let cur = null; try { cur = localStorage.getItem("chronographs.cur"); } catch (e) {}
+  if (cur && cur !== "demo") { const r = codeToName(cur); if (r.ok) { setAccount(r.id, r.name); return; } }
+  if (cur === "demo" || !cur) {
+    KEY = LEGACY_KEY; const s = load();
+    if (s.name) setAccount("demo");
+  }
+}
+
 const allQuestions = () => MISSIONS.flatMap(m => m.questions);
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -410,7 +440,7 @@ function shell(inner) {
 }
 
 function render() {
-  if (!S.name) return askName();
+  if (!ACC || !S.name) return askLogin();
   if (tab === "cards") return viewCards();
   if (tab === "me") return viewMe();
   if (tab === "port") return viewPort();
@@ -418,16 +448,31 @@ function render() {
   return viewMap();
 }
 
-function askName() {
+function askLogin() {
   $app.innerHTML = `<div class="wrap" style="padding-top:36px">
     ${banner("Хронографы")}
     <div class="hero-owl">${owl("guide", 130, "bob")}</div>
-    <div class="panel" style="margin-top:6px"><p class="story">Я Хроня, штурман. Машина времени сломалась, и починить её сможет только капитан экспедиционной компании. Изучай материалы, отправляйся в плавания, открывай карту и строй свой порт. Как тебя зовут, капитан?</p>
-    <input type="text" id="nm" placeholder="Имя и первая буква фамилии" maxlength="30" autocomplete="off">
-    <button class="btn red" id="go">В путь</button></div></div>`;
-  const go = () => { const v = document.getElementById("nm").value.trim(); if (v) { S.name = v; save(); render(); showFact(); } };
+    <div class="panel" style="margin-top:6px" id="lp"><p class="story">Я Хроня, штурман. Машина времени сломалась, и починить её сможет только капитан экспедиционной компании. Введи код, который выдала учительница.</p>
+    <input type="text" id="code" placeholder="Код ученика, например 77FB-H3" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <p id="err" style="color:var(--red2);margin:8px 0 0;min-height:1.4em"></p>
+    <button class="btn red" id="go">Войти</button>
+    <button class="btn ghost" id="demo">Играть без кода (пробный режим)</button></div></div>`;
+  const go = () => {
+    const r = codeToName(document.getElementById("code").value);
+    if (!r.ok) { document.getElementById("err").textContent = "Код не подошёл. Проверь, нет ли в нём ошибки, или попроси у учительницы новый."; return; }
+    setAccount(r.id, r.name); render(); showFact();
+  };
   document.getElementById("go").onclick = go;
-  document.getElementById("nm").onkeydown = e => { if (e.key === "Enter") go(); };
+  document.getElementById("code").onkeydown = e => { if (e.key === "Enter") go(); };
+  document.getElementById("demo").onclick = () => {
+    document.getElementById("lp").innerHTML = `<p class="story">Пробный режим для проверки игры. Прогресс хранится только на этом устройстве и не попадёт в список класса.</p>
+      <input type="text" id="nm" placeholder="Имя и первая буква фамилии" maxlength="30" autocomplete="off">
+      <button class="btn red" id="go2">Начать</button><button class="btn ghost" id="back">Назад</button>`;
+    const go2 = () => { const v = document.getElementById("nm").value.trim(); if (v) { setAccount("demo", v); render(); showFact(); } };
+    document.getElementById("go2").onclick = go2;
+    document.getElementById("nm").onkeydown = e => { if (e.key === "Enter") go2(); };
+    document.getElementById("back").onclick = askLogin;
+  };
 }
 
 // ---------- Карта ----------
@@ -929,23 +974,44 @@ function makeCode() {
 }
 function viewMe() {
   const code = makeCode();
-  shell(`${banner("Профиль капитана")}<div class="panel"><p>Покажи этот код учителю, и класс увидит общий прогресс.</p>
+  const mine = ACC && ACC !== "demo" ? groupCode(ACC) : "";
+  shell(`${banner("Профиль капитана")}
+    <div class="panel"><p><b>${esc(S.name)}</b></p>
+    ${mine ? `<p class="muted">Твой код входа: <b>${mine}</b></p>` : `<p class="muted">Пробный режим: кода входа нет.</p>`}
+    <button class="btn ghost" id="switch" style="margin-top:0">Сменить ученика</button></div>
+    <div class="panel"><b class="fh" style="font-size:20px">Код для учителя</b><p class="muted" style="margin-top:6px">Покажи этот код учительнице, и класс увидит общий прогресс.</p>
     <textarea readonly id="code">${code}</textarea>
     <button class="btn" id="copy">Скопировать код</button></div>
+    <div class="panel"><b class="fh" style="font-size:20px">Сохранение прогресса</b><p class="muted" style="margin-top:6px">Перенеси игру на другой телефон: скопируй код сохранения, а на новом телефоне вставь его сюда после входа.</p>
+    <textarea id="bk" placeholder="Код сохранения"></textarea>
+    <div class="grid2"><button class="btn ghost" id="bkget">Получить код</button><button class="btn" id="bkput">Загрузить</button></div><p id="bkmsg" class="muted" style="margin:8px 0 0"></p></div>
     <div class="panel"><button class="btn ghost" id="fact" style="margin-top:0">Показать факт</button>
-    <button class="btn ghost" id="reset">Начать заново на этом телефоне</button></div>`);
-  document.getElementById("copy").onclick = async () => {
-    try { await navigator.clipboard.writeText(code); document.getElementById("copy").textContent = "Скопировано ✓"; }
-    catch (e) { document.getElementById("code").select(); try { document.execCommand("copy"); } catch (e2) {} }
+    <button class="btn ghost" id="reset">Начать заново</button></div>`);
+  const copyTo = async (id, btnId) => {
+    const el = document.getElementById(id);
+    try { await navigator.clipboard.writeText(el.value); document.getElementById(btnId).textContent = "Скопировано ✓"; }
+    catch (e) { el.select(); try { document.execCommand("copy"); } catch (e2) {} }
+  };
+  document.getElementById("copy").onclick = () => copyTo("code", "copy");
+  document.getElementById("switch").onclick = () => ask("Выйти из аккаунта? Прогресс сохранится на этом устройстве, вход снова по коду.", "Выйти", logout);
+  document.getElementById("bkget").onclick = () => { document.getElementById("bk").value = btoa(unescape(encodeURIComponent(JSON.stringify(S)))); document.getElementById("bkmsg").textContent = "Скопируй этот код и сохрани."; document.getElementById("bk").select(); };
+  document.getElementById("bkput").onclick = () => {
+    const msg = document.getElementById("bkmsg");
+    try {
+      const d = JSON.parse(decodeURIComponent(escape(atob(document.getElementById("bk").value.trim()))));
+      if (!d || d.v !== 1) throw 0;
+      ask("Заменить прогресс на этом устройстве сохранённым?", "Заменить", () => { const nm = S.name; S = Object.assign(defaults(), d); S.b = Object.assign(defaults().b, d.b || {}); S.name = nm; lastCoins = S.coins; save(); tab = "map"; chap = null; render(); });
+    } catch (e) { msg.textContent = "Код сохранения не подошёл."; }
   };
   document.getElementById("fact").onclick = showFact;
   document.getElementById("reset").onclick = () => {
-    ask("Всё удалить: очки, монеты, порт, вымпелы, имя?", "Удалить", () => { try { localStorage.removeItem(KEY); } catch (e) {} S = load(); tab = "map"; chap = null; render(); });
+    ask("Всё удалить: очки, монеты, порт, героев? Имя останется.", "Удалить", () => { const nm = S.name; S = defaults(); S.name = nm; lastCoins = 0; save(); tab = "map"; chap = null; render(); });
   };
 }
 
+bootAccount();
 render();
-if (S.name) showFact();
+if (ACC && S.name) showFact();
 </script>
 </body>
 </html>

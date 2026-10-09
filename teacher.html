@@ -44,6 +44,20 @@ tr.me td:first-child { font-weight: 800; }
 .weak td:last-child { font-weight: 800; color: var(--red2); text-align: right; }
 .weak td { white-space: normal; }
 .note { font-size: 13px; color: var(--ink2); margin-top: 8px; }
+
+.codebox { font-family: ui-monospace, monospace; font-weight: 800; letter-spacing: .05em; background: #fffaf0; border: 2px solid var(--edge); border-radius: 6px; padding: 3px 8px; }
+button.sm { padding: 5px 10px; font-size: 13px; box-shadow: 0 2px 0 var(--golddk); }
+button.ghost.sm { box-shadow: 0 2px 0 #7d6234; }
+.err { color: var(--red2); }
+#cards { display: none; }
+@media print {
+  body { background: #fff; color: #000; padding: 0; }
+  .wrap { display: none; }
+  #cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { border: 2px dashed #555; border-radius: 8px; padding: 14px; break-inside: avoid; color: #000; background: #fff; font-size: 14px; line-height: 1.5; }
+  .card b { font-size: 18px; display: block; margin-bottom: 4px; }
+  .card .codebox { font-size: 18px; display: inline-block; margin: 4px 0; border-color: #000; }
+}
 .demo { display: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 6px; background: #3a4290; color: #fff; font-weight: 800; }
 </style>
 </head>
@@ -51,6 +65,20 @@ tr.me td:first-child { font-weight: 800; }
 <div class="wrap">
   <div class="banner"><div><span>Страница учителя</span></div></div>
   <div class="demo" id="demo">Это пример с вымышленными учениками. Чтобы убрать его, нажмите «Очистить список».</div>
+
+  <div class="panel">
+    <h2>Список класса и коды входа</h2>
+    <p>Впишите учеников, по одному в строке: имя и первая буква фамилии, например «Аня К.». Пишите по-русски, не больше 14 знаков. Потом нажмите «Выдать коды». Код выдаётся по имени, поэтому он не меняется, сколько раз ни нажимай.</p>
+    <textarea id="names" placeholder="Аня К.&#10;Дима С.&#10;Лиза М."></textarea>
+    <div class="row"><button id="mk">Выдать коды</button></div>
+    <p class="note err" id="rerr"></p>
+    <div class="scroll" id="rtable"></div>
+    <div class="row" id="rbtn" style="display:none">
+      <button class="ghost" id="rcopy">Скопировать всё для рассылки</button>
+      <button class="ghost" id="rprint">Печать карточек</button>
+    </div>
+    <p class="note">Каждый ученик вводит свой код при входе в игру или открывает личную ссылку: тогда вход произойдёт сам. Прогресс ученика хранится на его телефоне, на общем телефоне можно переключаться между учениками.</p>
+  </div>
 
   <div class="panel">
     <h2>Добавить отчёты учеников</h2>
@@ -68,7 +96,9 @@ tr.me td:first-child { font-weight: 800; }
   <div class="panel"><h2>Ученики</h2><div class="scroll" id="table"></div></div>
   <div class="panel"><h2>Над чем поработать на уроке</h2><p class="muted">Вопросы, где класс ошибается чаще всего.</p><div id="weak"></div></div>
 </div>
+<div id="cards"></div>
 <script src="data.js"></script>
+<script src="auth.js"></script>
 <script>
 const KEY = "chronographs.teacher.v1";
 let R = {}, demo = false;
@@ -98,6 +128,45 @@ document.getElementById("sample").onclick = () => {
   demo = true; draw();
 };
 
+
+const RKEY = "chronographs.roster.v1";
+let roster = [];
+try { roster = JSON.parse(localStorage.getItem(RKEY)) || []; } catch (e) {}
+const gameUrl = () => new URL("index.html", location.href).href.split("#")[0];
+const linkFor = code => gameUrl() + "#k=" + code;
+function copyText(s, btn) {
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = "Скопировано ✓"; setTimeout(() => btn.textContent = o, 1500); } };
+  if (navigator.clipboard) navigator.clipboard.writeText(s).then(done, () => fallback());
+  else fallback();
+  function fallback() { const a = document.createElement("textarea"); a.value = s; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); done(); } catch (e) {} a.remove(); }
+}
+function drawRoster() {
+  document.getElementById("names").value = roster.map(r => r.name).join("\n");
+  const box = document.getElementById("rtable");
+  document.getElementById("rbtn").style.display = roster.length ? "flex" : "none";
+  box.innerHTML = roster.length ? `<table><tr><th>№</th><th>Ученик</th><th>Код входа</th><th></th></tr>${roster.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.name)}</td><td><span class="codebox">${groupCode(r.code)}</span></td><td><button class="ghost sm" data-c="${i}">Копировать код</button> <button class="ghost sm" data-l="${i}">Копировать ссылку</button></td></tr>`).join("")}</table>` : "";
+  box.querySelectorAll("[data-c]").forEach(b => b.onclick = () => copyText(groupCode(roster[+b.dataset.c].code), b));
+  box.querySelectorAll("[data-l]").forEach(b => b.onclick = () => copyText(linkFor(roster[+b.dataset.l].code), b));
+  document.getElementById("cards").innerHTML = roster.map(r => `<div class="card"><b>${esc(r.name)}</b>Игра «Хронографы»<br>Код входа:<br><span class="codebox">${groupCode(r.code)}</span><br>Или открой ссылку:<br>${esc(linkFor(r.code))}</div>`).join("");
+}
+document.getElementById("mk").onclick = () => {
+  const lines = document.getElementById("names").value.split(/\n/).map(s => s.trim()).filter(Boolean);
+  const list = [], errs = [], seen = new Set();
+  lines.forEach(l => {
+    const r = checkName(l);
+    if (!r.ok) { errs.push(`«${l}»: ${r.error}`); return; }
+    const code = nameToCode(l);
+    if (seen.has(code)) { errs.push(`«${l}»: такой ученик уже есть, добавьте отличие, например букву фамилии`); return; }
+    seen.add(code); list.push({ name: r.name, code });
+  });
+  roster = list;
+  try { localStorage.setItem(RKEY, JSON.stringify(roster)); } catch (e) {}
+  document.getElementById("rerr").innerHTML = errs.length ? "Не вошли в список: " + errs.map(esc).join("; ") : "";
+  drawRoster(); draw();
+};
+document.getElementById("rcopy").onclick = e => copyText(roster.map(r => `${r.name}\nИгра «Хронографы»: ${gameUrl()}\nКод входа: ${groupCode(r.code)}\nСсылка для входа: ${linkFor(r.code)}\n`).join("\n"), e.target);
+document.getElementById("rprint").onclick = () => window.print();
+
 function ago(d) {
   if (!d) return `<span class="tag warn">нет данных</span>`;
   const k = Math.round((Date.now() - new Date(d + "T00:00:00").getTime()) / 864e5);
@@ -108,14 +177,18 @@ function ago(d) {
 
 function draw() {
   document.getElementById("demo").style.display = demo ? "block" : "none";
-  const kids = Object.values(R).sort((a, b) => b.x - a.x);
-  const total = kids.reduce((s, k) => s + k.x, 0), goal = Math.max(1, kids.length) * 800;
+  const reps = Object.values(R).sort((a, b) => b.x - a.x);
+  const have = new Set(reps.map(k => k.n));
+  const missing = roster.filter(r => !have.has(r.name)).map(r => ({ n: r.name, empty: true, x: 0 }));
+  const inRoster = new Set(roster.map(r => r.name));
+  const kids = reps.concat(missing);
+  const total = reps.reduce((s, k) => s + k.x, 0), goal = Math.max(1, kids.length) * 800;
   document.getElementById("ship").innerHTML = `<h2>Общий корабль класса</h2><p>${total} очков из ${goal}. Цель: по 800 очков на ученика.</p>
     <div class="bar"><i style="width:${Math.min(100, total / goal * 100)}%"></i></div>
     <p class="note">Когда шкала заполнится, откройте классу общую награду, например выбор формата следующего урока.</p>`;
 
   const head = `<tr><th>Имя</th><th>Очки</th><th>Монеты</th><th>Изучено</th><th>Герои</th><th>Серия</th><th>Был</th>${MISSIONS.map(m => `<th title="${esc(m.title)}">${esc(m.par.replace("§ ", "§"))}</th>`).join("")}</tr>`;
-  const rows = kids.map(k => `<tr><td>${esc(k.n)}</td><td>${k.x}</td><td>${k.k ?? "—"}</td><td>${k.r != null ? k.r + " из " + MISSIONS.length : "—"}</td><td>${k.h ?? k.c ?? "—"}</td><td>${k.s || 0}</td><td>${ago(k.d)}</td>
+  const rows = kids.map(k => k.empty ? `<tr><td>${esc(k.n)}</td><td colspan="${6 + MISSIONS.length}" class="none">ещё не присылал отчёт</td></tr>` : `<tr><td>${esc(k.n)}${roster.length && !inRoster.has(k.n) ? ` <span class="tag warn">нет в списке</span>` : ""}</td><td>${k.x}</td><td>${k.k ?? "—"}</td><td>${k.r != null ? k.r + " из " + MISSIONS.length : "—"}</td><td>${k.h ?? k.c ?? "—"}</td><td>${k.s || 0}</td><td>${ago(k.d)}</td>
     ${MISSIONS.map(m => k.m && k.m[m.id] ? `<td class="st">${"★".repeat(k.m[m.id])}</td>` : `<td class="none">–</td>`).join("")}</tr>`).join("");
   document.getElementById("table").innerHTML = kids.length ? `<table>${head}${rows}</table><p class="note">★ показывает точность с первой попытки: три звезды — 90 % и выше, две — от 60 %, одна — остальное. Колонка «Серия» — сколько дней подряд ученик занимался.</p>` : `<p class="muted">Пока нет данных. Вставьте коды или нажмите «Показать пример».</p>`;
 
@@ -126,6 +199,7 @@ function draw() {
   const top = Object.entries(wrong).filter(([id]) => qs[id]).sort((a, b) => b[1] - a[1]).slice(0, 8);
   document.getElementById("weak").innerHTML = top.length ? `<table class="weak">${top.map(([id, n]) => `<tr><td><span class="tag">${esc(qs[id].m.par)}</span> ${esc(label(qs[id].q))}</td><td>${who[id]} из ${kids.length} уч.<br>${n} ош.</td></tr>`).join("")}</table>` : `<p class="muted">Ошибок пока нет.</p>`;
 }
+drawRoster();
 draw();
 </script>
 </body>
