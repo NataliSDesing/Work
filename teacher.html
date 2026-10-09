@@ -3,78 +3,129 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Хронографы — учитель</title>
+<title>Хронографы: учитель</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Ruslan+Display&display=swap">
 <style>
-body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4e9d0; color: #2a2118; margin: 0; padding: 16px; }
-.wrap { max-width: 760px; margin: 0 auto; }
-.box { background: #fbf5e6; border-radius: 14px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 0 #d6c79f; }
-textarea { width: 100%; min-height: 80px; font: 12px monospace; padding: 10px; border-radius: 10px; border: 2px solid #d6c79f; }
-button { font: inherit; font-weight: 600; padding: 10px 16px; border: 0; border-radius: 10px; background: #1d4a6e; color: #fff; cursor: pointer; }
-button.ghost { background: transparent; color: #1d4a6e; border: 2px solid #1d4a6e; }
+:root {
+  --wood: #1d1611; --parch: #f0e1bd; --parch2: #e5d1a1; --edge: #a88347; --gold: #e3b04b; --gold2: #f4d37a; --golddk: #8a5d14;
+  --navy: #262b66; --navy2: #171a45; --red: #b4452f; --red2: #8e3220; --green: #4f8a3e; --ink: #2b1d12; --ink2: #5b4630; --cream: #fff4d6;
+  --fh: "Ruslan Display", Georgia, serif; --fb: "Nunito", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px 16px 40px; font-family: var(--fb); font-weight: 600; color: var(--cream); background: var(--wood);
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 78px), radial-gradient(120% 50% at 50% 0%, #3b2a1b 0%, transparent 70%); min-height: 100vh; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.banner { filter: drop-shadow(0 3px 0 rgba(0,0,0,.45)); margin: 4px 0 14px; }
+.banner > div { background: var(--gold); padding: 3px 0; clip-path: polygon(0 0, 100% 0, 98% 50%, 100% 100%, 0 100%, 2% 50%); }
+.banner span { display: block; padding: 12px 34px; text-align: center; font-family: var(--fh); font-size: 24px; color: var(--gold2); background: linear-gradient(var(--navy), var(--navy2)); clip-path: polygon(0 0, 100% 0, 98% 50%, 100% 100%, 0 100%, 2% 50%); }
+.panel { position: relative; color: var(--ink); background: linear-gradient(160deg, #f6e9c8, var(--parch) 45%, var(--parch2)); border: 2px solid var(--edge); border-radius: 6px; padding: 18px; margin-bottom: 14px; box-shadow: 0 6px 0 rgba(0,0,0,.4), inset 0 0 40px rgba(168,131,71,.28); }
+.panel h2 { margin: 0 0 8px; font-family: var(--fh); font-weight: 400; font-size: 22px; color: var(--navy); }
+.panel p { margin: 0 0 10px; line-height: 1.45; }
+.muted { color: var(--ink2); }
+textarea { width: 100%; min-height: 84px; padding: 10px; font: 12px ui-monospace, monospace; color: var(--ink); background: #fffaf0; border: 2px solid var(--edge); border-radius: 6px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+button { font: inherit; font-weight: 800; cursor: pointer; padding: 10px 16px; border-radius: 8px; color: var(--ink); background: linear-gradient(#f4d37a, #d79a2c); border: 2px solid var(--golddk); box-shadow: 0 3px 0 var(--golddk); }
+button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--golddk); }
+button.ghost { background: linear-gradient(#f3e5c1, #e2cc9a); border-color: var(--edge); box-shadow: 0 3px 0 #7d6234; }
+.bar { height: 18px; border-radius: 9px; background: rgba(0,0,0,.18); overflow: hidden; border: 2px solid var(--edge); }
+.bar i { display: block; height: 100%; background: linear-gradient(#7cc47a, var(--green)); transition: width .6s; }
+.scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
-th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e3d6b3; }
-.bar { height: 14px; background: #d6c79f; border-radius: 7px; overflow: hidden; }
-.bar i { display: block; height: 100%; background: #2e8b57; }
-.stars { color: #e0a526; }
-.weak td:last-child { white-space: nowrap; font-weight: 700; color: #c0392b; }
+th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid rgba(168,131,71,.5); white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink2); }
+td.st { color: #c28f1f; letter-spacing: 1px; }
+td.none { color: #b5a37a; }
+tr.me td:first-child { font-weight: 800; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 800; background: rgba(168,131,71,.3); }
+.tag.warn { background: #f0c8bd; color: var(--red2); }
+.tag.ok { background: #cfe8cf; color: #2d6a3a; }
+.weak td:last-child { font-weight: 800; color: var(--red2); text-align: right; }
+.weak td { white-space: normal; }
+.note { font-size: 13px; color: var(--ink2); margin-top: 8px; }
+.demo { display: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 6px; background: #3a4290; color: #fff; font-weight: 800; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Учитель: сводка класса</h1>
+  <div class="banner"><div><span>Страница учителя</span></div></div>
+  <div class="demo" id="demo">Это пример с вымышленными учениками. Чтобы убрать его, нажмите «Очистить список».</div>
 
-  <div class="box">
-    <b>Добавить отчёты учеников</b>
-    <p>Ученик в приложении открывает «Мой код» и показывает или присылает код. Вставьте один или несколько кодов (каждый с новой строки).</p>
+  <div class="panel">
+    <h2>Добавить отчёты учеников</h2>
+    <p>Ученик в игре нажимает на золотой круг с уровнем вверху, выбирает «Скопировать код» и присылает его вам. Вставьте один или несколько кодов, каждый с новой строки.</p>
     <textarea id="in" placeholder="Вставьте коды сюда"></textarea>
-    <p><button id="add">Добавить</button> <button class="ghost" id="clear">Очистить список</button></p>
-    <p id="msg"></p>
+    <div class="row">
+      <button id="add">Добавить</button>
+      <button class="ghost" id="sample">Показать пример</button>
+      <button class="ghost" id="clear">Очистить список</button>
+    </div>
+    <p class="note" id="msg"></p>
   </div>
 
-  <div class="box" id="ship"></div>
-  <div class="box" id="table"></div>
-  <div class="box" id="weak"></div>
+  <div class="panel" id="ship"></div>
+  <div class="panel"><h2>Ученики</h2><div class="scroll" id="table"></div></div>
+  <div class="panel"><h2>Над чем поработать на уроке</h2><p class="muted">Вопросы, где класс ошибается чаще всего.</p><div id="weak"></div></div>
 </div>
 <script src="data.js"></script>
 <script>
 const KEY = "chronographs.teacher.v1";
-let R = {};
+let R = {}, demo = false;
 try { R = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const decode = c => JSON.parse(decodeURIComponent(escape(atob(c.trim()))));
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(R)); } catch (e) {} };
 
 document.getElementById("add").onclick = () => {
   const lines = document.getElementById("in").value.split(/\s+/).filter(Boolean);
   let ok = 0, bad = 0;
   lines.forEach(l => { try { const o = decode(l); if (o && o.n) { R[o.n] = o; ok++; } else bad++; } catch (e) { bad++; } });
-  localStorage.setItem(KEY, JSON.stringify(R));
-  document.getElementById("msg").textContent = `Добавлено: ${ok}${bad ? `, не распознано: ${bad}` : ""}`;
+  if (ok) { demo = false; save(); }
+  document.getElementById("msg").textContent = lines.length ? `Добавлено: ${ok}${bad ? `, не распознано: ${bad}` : ""}` : "Вставьте код ученика.";
   document.getElementById("in").value = "";
   draw();
 };
-document.getElementById("clear").onclick = () => {
-  if (confirm("Удалить все загруженные отчёты?")) { R = {}; localStorage.removeItem(KEY); draw(); }
+document.getElementById("clear").onclick = () => { R = {}; demo = false; try { localStorage.removeItem(KEY); } catch (e) {} document.getElementById("msg").textContent = "Список очищен."; draw(); };
+document.getElementById("sample").onclick = () => {
+  const day = k => new Date(Date.now() - k * 864e5).toISOString().slice(0, 10);
+  R = {
+    "Аня К.": { n: "Аня К.", x: 380, k: 210, r: 9, h: 18, s: 6, d: day(0), m: { m0: 3, m1: 3, m2: 2, m2b: 3, m3: 3, m3b: 2, m4: 3, m5: 3, m6: 2 }, w: { m1q8: 1, m4q10: 1 } },
+    "Дима С.": { n: "Дима С.", x: 190, k: 95, r: 5, h: 9, s: 3, d: day(1), m: { m0: 3, m1: 2, m2: 2, m2b: 1, m3: 2 }, w: { m1q8: 2, m2q7: 1, m2bq7: 1, m3q6: 2 } },
+    "Лиза М.": { n: "Лиза М.", x: 150, k: 40, r: 4, h: 7, s: 2, d: day(2), m: { m0: 3, m1: 3, m2: 1, m2b: 2 }, w: { m2q7: 2, m2q8: 1, m1q8: 1 } },
+    "Паша Т.": { n: "Паша Т.", x: 40, k: 25, r: 2, h: 1, s: 1, d: day(6), m: { m0: 1 }, w: { m0q7: 2, m1q8: 1, m0q5: 1 } }
+  };
+  demo = true; draw();
 };
 
-function draw() {
-  const kids = Object.values(R).sort((a, b) => b.x - a.x);
-  const total = kids.reduce((s, k) => s + k.x, 0);
-  const goal = Math.max(1, kids.length) * 800;
-  document.getElementById("ship").innerHTML = `<b>Общий корабль класса</b><p>${total} очков из ${goal} (цель — по 800 на ученика)</p>
-    <div class="bar"><i style="width:${Math.min(100, total / goal * 100)}%"></i></div>
-    <p><small>Когда шкала заполнится, откройте классу общую награду.</small></p>`;
-
-  document.getElementById("table").innerHTML = `<b>Ученики (${kids.length})</b><table><tr><th>Имя</th><th>Очки</th><th>Серия</th>${MISSIONS.map(m => `<th title="${esc(m.title)}">${m.icon}</th>`).join("")}</tr>
-    ${kids.map(k => `<tr><td>${esc(k.n)}</td><td>${k.x}</td><td>${k.s || 0}🔥</td>${MISSIONS.map(m => `<td class="stars">${k.m && k.m[m.id] ? "★".repeat(k.m[m.id]) : "–"}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="9">Пока нет данных</td></tr>`}</table>`;
-
-  const wrong = {};
-  kids.forEach(k => Object.entries(k.w || {}).forEach(([q, n]) => wrong[q] = (wrong[q] || 0) + n));
-  const qs = Object.fromEntries(allQ().map(q => [q.id, q]));
-  const rows = Object.entries(wrong).sort((a, b) => b[1] - a[1]).slice(0, 8).filter(([id]) => qs[id]);
-  document.getElementById("weak").innerHTML = `<b>Над чем стоит поработать на уроке</b><p><small>Вопросы, где класс ошибается чаще всего.</small></p>
-    <table class="weak">${rows.map(([id, n]) => `<tr><td>${esc(qs[id].q)}</td><td>${n} ош.</td></tr>`).join("") || `<tr><td>Ошибок пока нет</td><td></td></tr>`}</table>`;
+function ago(d) {
+  if (!d) return `<span class="tag warn">нет данных</span>`;
+  const k = Math.round((Date.now() - new Date(d + "T00:00:00").getTime()) / 864e5);
+  if (k <= 0) return `<span class="tag ok">сегодня</span>`;
+  if (k === 1) return `<span class="tag ok">вчера</span>`;
+  return `<span class="tag ${k > 4 ? "warn" : ""}">${k} дн. назад</span>`;
 }
-function allQ() { return MISSIONS.flatMap(m => m.questions); }
+
+function draw() {
+  document.getElementById("demo").style.display = demo ? "block" : "none";
+  const kids = Object.values(R).sort((a, b) => b.x - a.x);
+  const total = kids.reduce((s, k) => s + k.x, 0), goal = Math.max(1, kids.length) * 800;
+  document.getElementById("ship").innerHTML = `<h2>Общий корабль класса</h2><p>${total} очков из ${goal}. Цель: по 800 очков на ученика.</p>
+    <div class="bar"><i style="width:${Math.min(100, total / goal * 100)}%"></i></div>
+    <p class="note">Когда шкала заполнится, откройте классу общую награду, например выбор формата следующего урока.</p>`;
+
+  const head = `<tr><th>Имя</th><th>Очки</th><th>Монеты</th><th>Изучено</th><th>Герои</th><th>Серия</th><th>Был</th>${MISSIONS.map(m => `<th title="${esc(m.title)}">${esc(m.par.replace("§ ", "§"))}</th>`).join("")}</tr>`;
+  const rows = kids.map(k => `<tr><td>${esc(k.n)}</td><td>${k.x}</td><td>${k.k ?? "—"}</td><td>${k.r != null ? k.r + " из " + MISSIONS.length : "—"}</td><td>${k.h ?? k.c ?? "—"}</td><td>${k.s || 0}</td><td>${ago(k.d)}</td>
+    ${MISSIONS.map(m => k.m && k.m[m.id] ? `<td class="st">${"★".repeat(k.m[m.id])}</td>` : `<td class="none">–</td>`).join("")}</tr>`).join("");
+  document.getElementById("table").innerHTML = kids.length ? `<table>${head}${rows}</table><p class="note">★ показывает точность с первой попытки: три звезды — 90 % и выше, две — от 60 %, одна — остальное. Колонка «Серия» — сколько дней подряд ученик занимался.</p>` : `<p class="muted">Пока нет данных. Вставьте коды или нажмите «Показать пример».</p>`;
+
+  const wrong = {}, who = {};
+  kids.forEach(k => Object.entries(k.w || {}).forEach(([q, n]) => { wrong[q] = (wrong[q] || 0) + n; who[q] = (who[q] || 0) + 1; }));
+  const label = q => q.items ? `${q.q} Начало: «${q.items[0].replace(/ \(.*$/, "")}»` : q.pairs ? `Соедини: ${q.pairs.map(p => p[0]).join(", ")}` : q.q;
+  const qs = {}; MISSIONS.forEach(m => m.questions.forEach(q => qs[q.id] = { q, m }));
+  const top = Object.entries(wrong).filter(([id]) => qs[id]).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  document.getElementById("weak").innerHTML = top.length ? `<table class="weak">${top.map(([id, n]) => `<tr><td><span class="tag">${esc(qs[id].m.par)}</span> ${esc(label(qs[id].q))}</td><td>${who[id]} из ${kids.length} уч.<br>${n} ош.</td></tr>`).join("")}</table>` : `<p class="muted">Ошибок пока нет.</p>`;
+}
 draw();
 </script>
 </body>

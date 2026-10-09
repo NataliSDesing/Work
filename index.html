@@ -924,7 +924,7 @@ function viewHero(id) {
 
 // ---------- Профиль и код для учителя ----------
 function makeCode() {
-  const o = { v: 1, n: S.name, x: S.xp, m: S.m, w: S.w, d: S.day, s: S.streak, c: S.cards.length };
+  const o = { v: 1, n: S.name, x: S.xp, k: S.coins, r: Object.keys(S.read).length, h: S.heroes.length, m: S.m, w: S.w, d: S.day, s: S.streak, c: S.cards.length };
   return btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 }
 function viewMe() {
