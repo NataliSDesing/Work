@@ -1,0 +1,49 @@
+<script>
+(function(){
+  var root=document;
+  function $(s,c){return (c||root).querySelector(s)}
+  function $$(s,c){return Array.prototype.slice.call((c||root).querySelectorAll(s))}
+  /* меню на телефоне */
+  var burger=$('#llBurger'),nav=$('#llNav');
+  if(burger&&nav){burger.addEventListener('click',function(){var o=nav.classList.toggle('is-open');burger.setAttribute('aria-expanded',o)});
+    $$('a',nav).forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('is-open');burger.setAttribute('aria-expanded','false')})})}
+  /* появление блоков при скролле */
+  var rv=$$('.ll-reveal');
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});rv.forEach(function(n){io.observe(n)})}
+  else{rv.forEach(function(n){n.classList.add('is-in')})}
+  /* подбор комплекта */
+  var DATA={'Bystronic':['ByStar Fiber 3015','ByStar Fiber 4020','BySprint Fiber 3015'],'Trumpf':['TruLaser 3030','TruLaser 5030','TruLaser 3060'],'Bodor':['Bodor i5 3015','Bodor P 3015','Bodor C 3015'],'HSG Laser':['GWEIKE LF3015','GWEIKE LF4020','GWEIKE LF6025'],"Han's Laser":['G3015','G4020','G6025']};
+  var SER={
+    'Econom':{tag:'Для тонколистового металла',desc:'Минимальная пылевая нагрузка, без агрессивных сред и раскалённых капель. Материал: отечественный технический полимер европейского качества.',use:'Тонколистовой металл, сухая резка',cut:'Сухая резка, без агрессивных сред',th:'до __ мм'},
+    'Optimal':{tag:'Для регулярного раскроя',desc:'Работа с СОЖ и умеренной абразивной нагрузкой. Баланс ресурса материала и стоимости.',use:'Средние толщины, интенсивное производство',cut:'СОЖ, умеренная абразивная нагрузка',th:'до __ мм'},
+    'Laserline Pro':{tag:'Для тяжёлой резки',desc:'Капли расплава и раскалённая окалина. Полная герметизация оптического тракта.',use:'Толстолистовой металл, тяжёлая резка',cut:'Капли расплава, раскалённая окалина',th:'до 40 мм'}};
+  var st={brand:'Bystronic',model:'ByStar Fiber 3015',series:'Optimal'};
+  function chips(el,items,key,pick){if(!el)return;el.className='ll-chips';el.innerHTML='';items.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='ll-chip';b.textContent=t;b.setAttribute('aria-pressed',st[key]===t);b.addEventListener('click',function(){st[key]=t;if(pick)pick();render()});el.appendChild(b)})}
+  function render(){
+    chips($('#llBrands'),Object.keys(DATA),'brand',function(){st.model=DATA[st.brand][0]});
+    chips($('#llModels'),DATA[st.brand],'model');
+    chips($('#llSeries'),Object.keys(SER),'series');
+    var s=$('#llShow');if(s)s.textContent='Показать комплект: '+st.brand+' '+st.model+' · '+st.series.replace('Laserline ','')}
+  render();
+  /* окно «Модель гофрозащиты» */
+  var modal=$('#llModal'),lastFocus=null;
+  function openM(){var d=SER[st.series];$('#llMTitle').textContent=st.series.replace('Laserline ','');$('#llMTag').textContent=d.tag;$('#llMDesc').textContent=d.desc;$('#llMUse').textContent=d.use;$('#llMCut').textContent=d.cut;$('#llMTh').textContent=d.th;$('#llMFit').textContent=st.brand+' '+st.model;lastFocus=document.activeElement;modal.classList.add('is-open');document.documentElement.style.overflow='hidden';$('#llClose').focus()}
+  function closeM(){modal.classList.remove('is-open');document.documentElement.style.overflow='';if(lastFocus)lastFocus.focus()}
+  var show=$('#llShow');if(show)show.addEventListener('click',openM);
+  var cl=$('#llClose');if(cl)cl.addEventListener('click',closeM);
+  if(modal){modal.addEventListener('click',function(e){if(e.target===modal)closeM()});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('is-open'))closeM()})}
+  function setKind(k){var r=$('input[name="kind"][value="'+k+'"]');if(r)r.checked=true}
+  var pick=$('#llPick');if(pick)pick.addEventListener('click',function(){closeM();setKind('calc');var m=$('#llMachine');if(m)m.value=st.brand+' '+st.model+' · '+st.series;var f=$('#request');if(f)f.scrollIntoView({behavior:'smooth'})});
+  $$('[data-kind]').forEach(function(a){a.addEventListener('click',function(){setKind(a.getAttribute('data-kind'))})});
+  /* видео: подставьте ссылку на Rutube/YouTube/VK в data-src плеера */
+  var play=$('#llPlay'),pl=$('#llPlayer');
+  if(play&&pl)play.addEventListener('click',function(){var src=pl.getAttribute('data-src');if(!src){return}var f=document.createElement('iframe');f.src=src;f.allow='autoplay; fullscreen';f.setAttribute('allowfullscreen','');pl.innerHTML='';pl.appendChild(f)});
+  /* форма: если задан адрес приёма, отправляем JSON, иначе просто показываем подтверждение.
+     Для приёма заявок в Тильду замените блок на штатную форму (см. README). */
+  var form=$('#llForm'),ok=$('#llOk');
+  if(form)form.addEventListener('submit',function(e){e.preventDefault();var d={};new FormData(form).forEach(function(v,k){d[k]=v});
+    if(!form.elements.name.value||!form.elements.email.value||!form.elements.agree.checked){(form.elements.name.value?(form.elements.email.value?form.elements.agree:form.elements.email):form.elements.name).focus();return}
+    var done=function(){form.style.display='none';ok.style.display='block'};
+    if(window.LL_FORM_ENDPOINT){fetch(window.LL_FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(done).catch(done)}else{done()}});
+})();
+</script>
