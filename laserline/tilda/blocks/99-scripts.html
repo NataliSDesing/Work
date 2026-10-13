@@ -8,7 +8,10 @@
   if(burger&&nav){burger.addEventListener('click',function(){var o=nav.classList.toggle('is-open');burger.setAttribute('aria-expanded',o)});
     $$('a',nav).forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('is-open');burger.setAttribute('aria-expanded','false')})})}
   /* появление блоков при скролле */
+  document.documentElement.classList.add('ll-js');
   var rv=$$('.ll-reveal');
+  /* страховка: если что-то пошло не так, через 4 с показываем всё */
+  setTimeout(function(){rv.forEach(function(n){n.classList.add('is-in')})},4000);
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});rv.forEach(function(n){io.observe(n)})}
   else{rv.forEach(function(n){n.classList.add('is-in')})}
   /* подбор комплекта */
