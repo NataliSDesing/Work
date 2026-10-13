@@ -74,38 +74,90 @@ def machine(p, state='idle'):
     head.box(GX1, hy0, 66, GX1 + 22, hy0 + 32, 100); head.box(GX1 + 6, hy0 + 10, 44, GX1 + 16, hy0 + 22, 66)
     head.line([(GX1 + 11, hy0 + 16, 44), (GX1 + 11, hy0 + 16, 36)], stroke=ORANGE, sw=1.8, depth=1e6, name='beam')
     # кабина: передние рёбра (прозрачное стекло, без заливки)
+    brand = p.get('brand', '')
+    ACC = {'Bystronic': LIME, 'Trumpf': BLUE, 'Bodor': ORANGE, 'HSG Laser': NAVY, "Han's Laser": GREY}.get(brand, LIME)
     cabF.line([(CAB_X1, CAB_Y0, z0), (CAB_X1, CAB_Y1, z0), (CAB_X0, CAB_Y1, z0)], stroke=GREY, sw=1)
     cabF.line(post(CAB_X1, CAB_Y1), stroke=GREY, sw=1.2); cabF.line(post(CAB_X1, CAB_Y0), stroke=GREY, sw=1.2); cabF.line(post(CAB_X0, CAB_Y1), stroke=GREY, sw=1.2)
+    def quad(pts, fill, stroke=NAVY, sw=.9, op=1):
+        d = 'M' + ' L'.join("%.1f %.1f" % P(*q) for q in pts) + ' Z'
+        cabF.items.append((1e5, '<path d="%s" fill="%s" fill-opacity="%s" stroke="%s" stroke-width="%s"/>' % (d, fill, op, stroke, sw)))
     roof = p.get('roof', 'flat')
-    if roof == 'flat':
-        cabF.line([(CAB_X0, CAB_Y0, z1), (CAB_X1, CAB_Y0, z1), (CAB_X1, CAB_Y1, z1), (CAB_X0, CAB_Y1, z1)], stroke=NAVY, sw=1.3, close=True, depth=5)
-    else:  # скошенная крыша: передняя кромка ниже
-        cabF.line([(CAB_X0, CAB_Y0, z1), (CAB_X1, CAB_Y0, z1), (CAB_X1, CAB_Y1, z1 - 18), (CAB_X0, CAB_Y1, z1 - 18)], stroke=NAVY, sw=1.3, close=True, depth=5)
-    # стекло: блики и дверь на лицевой (y=max) грани
+    rf = [(CAB_X0, CAB_Y0, z1), (CAB_X1, CAB_Y0, z1), (CAB_X1, CAB_Y1, z1), (CAB_X0, CAB_Y1, z1)]
+    if roof == 'slant':   # Trumpf: резкий скос крыши к оператору
+        cabF.line([(CAB_X0, CAB_Y0, z1), (CAB_X1, CAB_Y0, z1), (CAB_X1, CAB_Y1, z1 - 38), (CAB_X0, CAB_Y1, z1 - 38)], stroke=NAVY, sw=1.3, close=True, depth=5)
+        cabF.line([(CAB_X1, CAB_Y0, z1), (CAB_X1, CAB_Y1, z1 - 38)], stroke=NAVY, sw=1.3, depth=5)
+        cabF.line([(CAB_X0, CAB_Y1, z1 - 38), (CAB_X0, CAB_Y1, z1 - 38)], stroke=NAVY, sw=1)
+        cabF.line([(CAB_X1, CAB_Y1, z1 - 38), (CAB_X1, CAB_Y1, z1 - 56)], stroke=GREY, sw=1)
+    elif roof == 'bevel':  # Bystronic: срезанная передняя кромка
+        cabF.line(rf, stroke=NAVY, sw=1.3, close=True, depth=5)
+        cabF.line([(CAB_X0, CAB_Y1 - 22, z1), (CAB_X1, CAB_Y1 - 22, z1)], stroke=NAVY, sw=1.1, depth=5)
+        cabF.line([(CAB_X0, CAB_Y1, z1 - 22), (CAB_X1, CAB_Y1, z1 - 22)], stroke=NAVY, sw=1.1, depth=5)
+        cabF.line([(CAB_X1, CAB_Y1 - 22, z1), (CAB_X1, CAB_Y1, z1 - 22)], stroke=NAVY, sw=1.1, depth=5)
+    elif roof == 'barrel':  # Han's: арочная крыша
+        cabF.line(rf, stroke=NAVY, sw=1.3, close=True, depth=5)
+        mid = (CAB_Y0 + CAB_Y1) / 2
+        cabF.line([(CAB_X1, CAB_Y0, z1), (CAB_X1, mid, z1 + 20), (CAB_X1, CAB_Y1, z1)], stroke=NAVY, sw=1.3, depth=5)
+        cabF.line([(CAB_X0, mid, z1 + 20), (CAB_X1, mid, z1 + 20)], stroke=NAVY, sw=1.1, depth=5)
+        cabF.line([(CAB_X0, CAB_Y0, z1), (CAB_X0, mid, z1 + 20), (CAB_X0, CAB_Y1, z1)], stroke=GREY, sw=1, depth=5)
+    else:
+        cabF.line(rf, stroke=NAVY, sw=1.3, close=True, depth=5)
+    zt = z1 - (38 if roof == 'slant' else 0)  # верх лицевой грани
+    # двери на лицевой (y=max) грани + блики
     n_doors = p.get('doors', 2)
     dw = (CAB_X1 - CAB_X0) / (n_doors + 1)
     for i in range(1, n_doors + 1):
         x = CAB_X0 + dw * i
-        cabF.line([(x, CAB_Y1, z0), (x, CAB_Y1, z1)], stroke=GREY, sw=1, dash='3 3')
-    cabF.line([(CAB_X0 + 14, CAB_Y1, z0 + 14), (CAB_X0 + 44, CAB_Y1, z1 - 14)], stroke=BLUE, sw=1)
-    cabF.line([(CAB_X0 + 28, CAB_Y1, z0 + 14), (CAB_X0 + 58, CAB_Y1, z1 - 14)], stroke=BLUE, sw=1)
+        cabF.line([(x, CAB_Y1, z0), (x, CAB_Y1, zt)], stroke=GREY, sw=1, dash='3 3')
+    cabF.line([(CAB_X0 + 14, CAB_Y1, z0 + 24), (CAB_X0 + 44, CAB_Y1, zt - 10)], stroke=BLUE, sw=1)
+    cabF.line([(CAB_X0 + 28, CAB_Y1, z0 + 24), (CAB_X0 + 58, CAB_Y1, zt - 10)], stroke=BLUE, sw=1)
+    # фирменная полоса цвета по низу лицевой грани
+    quad([(CAB_X0, CAB_Y1, z0 + 2), (CAB_X1, CAB_Y1, z0 + 2), (CAB_X1, CAB_Y1, z0 + 14), (CAB_X0, CAB_Y1, z0 + 14)], ACC)
+    # тёмный козырёк (GWEIKE)
+    if brand == 'HSG Laser':
+        quad([(CAB_X0, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt), (CAB_X0, CAB_Y1, zt)], NAVY, op=.85)
+    # серая панель (Han's)
+    if brand == "Han's Laser":
+        quad([(CAB_X0, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt), (CAB_X0, CAB_Y1, zt)], GREY, op=.35)
+    # табличка с названием бренда
+    nm = {'Bystronic': 'BYSTRONIC', 'Trumpf': 'TRUMPF', 'Bodor': 'BODOR', 'HSG Laser': 'HSG LASER', "Han's Laser": "HAN'S LASER"}.get(brand, '')
+    if nm:
+        u0 = CAB_X0 + 8; tx = (0 - CAB_Y1) * C; ty = CAB_Y1 / 2 - (z0 + 44)
+        cabF.items.append((2e5, '<g transform="matrix(%.3f .5 0 1 %.1f %.1f)"><text x="%d" y="0" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="15" letter-spacing="1.2" fill="%s">%s</text></g>' % (C, tx, ty, u0, NAVY, nm)))
     # допы по типам
-    if kind in ('A', 'C'):
+    if kind in ('A', 'C') and brand != 'Trumpf':
         # сменный стол: выезжает по +X за кабину
         ex = int(L * (.46 if kind == 'A' else .38))
         extra.box(CAB_X1 + 4, 10, 18, CAB_X1 + 4 + ex, W - 10, 30, stroke=NAVY)
         extra.box(CAB_X1 + 10, 18, 30, CAB_X1 + 4 + ex - 6, W - 18, 36, stroke=GREY, sw=1.1)
         extra.box(CAB_X1 + 4, 8, 0, CAB_X1 + 12, 16, 18); extra.box(CAB_X1 + 4 + ex - 8, W - 16, 0, CAB_X1 + 4 + ex, W - 8, 18)
+    if brand == 'Trumpf' and kind != 'B':
+        # Trumpf: загрузка листа спереди, стол выезжает к оператору (по +Y)
+        ey = int(W * .55)
+        extra.box(30, CAB_Y1 + 4, 18, L - 30, CAB_Y1 + 4 + ey, 30, stroke=NAVY)
+        extra.box(38, CAB_Y1 + 10, 30, L - 38, CAB_Y1 + 4 + ey - 6, 36, stroke=GREY, sw=1.1)
+    if brand == 'Bodor':
+        # шкаф источника лазера: выше кабины, слева
+        extra.box(CAB_X0 - 60, CAB_Y0 + 8, 34, CAB_X0 - 4, CAB_Y0 + 92, 150, stroke=NAVY)
+        for k in (1, 2, 3):
+            extra.box(CAB_X0 - 56, CAB_Y0 + 92 - 1, 34 + k * 26, CAB_X0 - 8, CAB_Y0 + 93, 34 + k * 26 + 2, stroke=GREY, sw=.8)
+    if brand == 'Bystronic' and kind != 'B':
+        # боковая стойка с экраном на качающемся кронштейне уже ниже; здесь шкаф управления у стола
+        extra.box(CAB_X1 - 6, CAB_Y0 - 20, 0, CAB_X1 + 30, CAB_Y0 + 4, 70, stroke=NAVY)
     # пульт управления
-    if p.get('pult', 'swing') == 'swing':
+    pult = p.get('pult', 'swing')
+    if pult == 'swing':   # экран на кронштейне справа от кабины
         px, py = CAB_X1 - 10, CAB_Y1 + 22
-        extra.box(px - 12, py, 0, px, py + 12, 78)  # колонна
-        extra.box(px - 40, py - 6, 78, px, py + 22, 100)  # экран
-    else:
+        extra.box(px - 12, py, 0, px, py + 12, 78)
+        extra.box(px - 40, py - 6, 78, px, py + 22, 100)
+    elif pult == 'tall':  # высокая стойка слева (Han's)
+        px, py = CAB_X0 + 40, CAB_Y1 + 24
+        extra.box(px, py, 0, px + 16, py + 16, 100)
+        extra.box(px - 14, py - 4, 100, px + 30, py + 22, 126)
+    else:                  # низкий пульт-тумба слева
         px, py = CAB_X0 + 70, CAB_Y1 + 26
         extra.box(px, py, 0, px + 30, py + 24, 70); extra.box(px + 4, py + 2, 70, px + 26, py + 22, 94)
     # лампа статуса
-    extra.box(CAB_X0 + 10, CAB_Y0 + 10, CAB_Z, CAB_X0 + 22, CAB_Y0 + 22, CAB_Z + 12, stroke=NAVY, fill=LIME if p.get('lamp', 'lime') == 'lime' else BLUE)
+    extra.box(CAB_X0 + 10, CAB_Y0 + 10, CAB_Z, CAB_X0 + 22, CAB_Y0 + 22, CAB_Z + 12, stroke=NAVY, fill=ACC)
     # сборка слоёв
     if state == 'hover':
         dx = travel_x[1] * .55; dy = hx[1] * .7
@@ -140,24 +192,24 @@ def wrap(body, pad=14):
 
 MODELS = [
     # бренд, модель, поле, L, W, тип, крыша, пульт, двери, лампа
-    ('Bystronic', 'ByStar Fiber 3015', '3000×1500', 300, 150, 'A', 'flat', 'swing', 2, 'lime'),
-    ('Bystronic', 'ByStar Fiber 4020', '4000×2000', 360, 180, 'A', 'flat', 'swing', 3, 'lime'),
-    ('Bystronic', 'BySprint Fiber 3015', '3000×1500', 300, 150, 'B', 'flat', 'swing', 2, 'lime'),
+    ('Bystronic', 'ByStar Fiber 3015', '3000×1500', 300, 150, 'A', 'bevel', 'swing', 2, 'lime'),
+    ('Bystronic', 'ByStar Fiber 4020', '4000×2000', 360, 180, 'A', 'bevel', 'swing', 3, 'lime'),
+    ('Bystronic', 'BySprint Fiber 3015', '3000×1500', 300, 150, 'B', 'bevel', 'swing', 2, 'lime'),
     ('Trumpf', 'TruLaser 3030', '3000×1500', 300, 150, 'B', 'slant', 'stand', 2, 'blue'),
     ('Trumpf', 'TruLaser 5030', '3000×1500', 300, 150, 'A', 'slant', 'stand', 2, 'blue'),
     ('Trumpf', 'TruLaser 3060', '6000×2000', 440, 160, 'A', 'slant', 'stand', 3, 'blue'),
     ('Bodor', 'Bodor i5 3015', '3000×1500', 300, 150, 'B', 'flat', 'stand', 2, 'lime'),
     ('Bodor', 'Bodor P 3015', '3000×1500', 300, 150, 'C', 'flat', 'stand', 2, 'lime'),
-    ('Bodor', 'Bodor C 3015', '3000×1500', 300, 150, 'C', 'flat', 'swing', 1, 'blue'),
-    ('HSG Laser', 'GWEIKE LF3015', '3000×1500', 300, 150, 'C', 'slant', 'swing', 2, 'lime'),
-    ('HSG Laser', 'GWEIKE LF4020', '4000×2000', 360, 180, 'C', 'slant', 'swing', 3, 'lime'),
-    ('HSG Laser', 'GWEIKE LF6025', '6000×2500', 440, 190, 'C', 'slant', 'swing', 3, 'lime'),
-    ("Han's Laser", 'G3015', '3000×1500', 300, 150, 'C', 'flat', 'stand', 2, 'blue'),
-    ("Han's Laser", 'G4020', '4000×2000', 360, 180, 'C', 'flat', 'stand', 3, 'blue'),
-    ("Han's Laser", 'G6025', '6000×2500', 440, 190, 'C', 'flat', 'stand', 3, 'blue'),
+    ('Bodor', 'Bodor C 3015', '3000×1500', 300, 150, 'C', 'flat', 'stand', 1, 'blue'),
+    ('HSG Laser', 'GWEIKE LF3015', '3000×1500', 300, 150, 'C', 'flat', 'swing', 2, 'lime'),
+    ('HSG Laser', 'GWEIKE LF4020', '4000×2000', 360, 180, 'C', 'flat', 'swing', 3, 'lime'),
+    ('HSG Laser', 'GWEIKE LF6025', '6000×2500', 440, 190, 'C', 'flat', 'swing', 3, 'lime'),
+    ("Han's Laser", 'G3015', '3000×1500', 300, 150, 'C', 'barrel', 'tall', 2, 'blue'),
+    ("Han's Laser", 'G4020', '4000×2000', 360, 180, 'C', 'barrel', 'tall', 3, 'blue'),
+    ("Han's Laser", 'G6025', '6000×2500', 440, 190, 'C', 'barrel', 'tall', 3, 'blue'),
 ]
 
-def params(m): return dict(L=m[3], W=m[4], kind=m[5], roof=m[6], pult=m[7], doors=m[8], lamp=m[9])
+def params(m): return dict(brand=m[0], L=m[3], W=m[4], kind=m[5], roof=m[6], pult=m[7], doors=m[8], lamp=m[9])
 
 def svg_of(m, state='idle', anim=False):
     body = machine(params(m), state)
