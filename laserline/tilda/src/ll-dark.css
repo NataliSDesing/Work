@@ -1,0 +1,46 @@
+/* ===== Laserline · тёмная тема. Подключается после ll.css, действует на блоки с классом .ll-d ===== */
+.ll.ll-d{--bg:#051A21;--paper:#0A2A34;--navy:#0C3340;--navy2:#134556;--line:#134556;--muted:#9FB6BE;--ondark:#9FB6BE;--grey:#5E7882;color:#EFEFEF}
+html{background:#051A21}
+.ll-d h1,.ll-d h2{color:#EFEFEF}
+/* кнопки: лаймовые, на наведение — контур */
+.ll-d .ll-btn{background:var(--lime);border-color:var(--lime);color:#051A21}
+.ll-d .ll-btn:hover{background:transparent;color:var(--lime);border-color:var(--lime)}
+.ll-d .ll-btn--lime:hover{background:transparent;color:var(--lime);border-color:var(--lime)}
+/* текст светлый на тёмных поверхностях */
+.ll-d.ll-sec--dark,.ll-d .ll-card--dark,.ll-d .ll-modal-box,.ll-d .ll-cta-photo,.ll-d .ll-ser-name,.ll-d .ll-ser p,.ll-d .ll-samples h3,.ll-d .ll-rev--dark,.ll-d .ll-docs,.ll-d .ll-msg a{color:#EFEFEF}
+.ll-d .ll-msg a:hover,.ll-d .ll-msg a:first-child{color:#051A21}
+.ll-d .ll-close::before,.ll-d .ll-close::after{background:#EFEFEF}
+.ll-d .ll-social svg{fill:#EFEFEF}
+/* акценты и линии */
+.ll-d .ll-card:hover{border-color:var(--lime);box-shadow:none}
+.ll-d .ll-link:hover{border-color:var(--lime)}
+.ll-d .ll-nav a:hover{color:#EFEFEF}
+.ll-d .ll-tag{color:#EFEFEF;background:#051A21;border-color:#5E7882}
+.ll-d .ll-chip{border-color:#9FB6BE;color:#EFEFEF}
+.ll-d .ll-chip:hover,.ll-d .ll-chip[aria-pressed=true]{background:var(--lime);border-color:var(--lime);color:#051A21}
+.ll-d .ll-chipx{border-color:#9FB6BE;background:transparent}
+.ll-d .ll-burger{border-color:#EFEFEF}
+.ll-d .ll-burger i{background:#EFEFEF}
+.ll-d .ll-dstep::before,.ll-d .ll-gtrack::before,.ll-d .ll-gb hr{background:#EFEFEF}
+.ll-d .ll-gtrack::after{border-color:#EFEFEF}
+.ll-d .ll-gtrack>div::before{background:#EFEFEF;border-color:#EFEFEF}
+.ll-d .ll-fast{border-color:#EFEFEF}
+.ll-d .ll-fast::before,.ll-d .ll-fast::after{border-color:#EFEFEF;background:#EFEFEF}
+.ll-d .ll-vcard--hl{border-color:#EFEFEF}
+.ll-d .ll-mach-cap{color:#EFEFEF}
+.ll-d.ll-header{background:#051A21;border-color:#134556}
+.ll-d .ll-nav.is-open{background:#051A21}
+.ll-d.ll-footer{background:#0A2A34;color:#C8D6DB}
+/* серии и отзывы */
+.ll-d .ll-ser,.ll-d .ll-samples{background:#0A2A34;border-color:#134556}
+.ll-d .ll-ser:hover{border-color:var(--lime)}
+.ll-d .ll-rev--dark{background:#0C3340;border-color:#134556}
+.ll-d .ll-author i{background:#0C3340;border-color:#134556}
+/* форма */
+.ll-d .ll-form input[type=text],.ll-d .ll-form input[type=email],.ll-d .ll-form input[type=tel]{background:#0A2A34;border-color:#5E7882;color:#EFEFEF}
+.ll-d .ll-ok{color:#051A21}
+/* первый экран: станок крупнее, обрезан краем карточки */
+@media (min-width:1101px){.ll-d .ll-main-art{width:74%;max-width:700px;right:-90px;bottom:-90px}}
+/* лаймовые плашки: текст тёмный */
+.ll-d .ll-urgent,.ll-d .ll-urgent *,.ll-d .ll-chipx--lime{color:#051A21}
+.ll-d .ll-chipx--lime{background:var(--lime);border-color:var(--lime)}

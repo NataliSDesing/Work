@@ -41,7 +41,7 @@
     'G4020':["Han's Laser",'4000×2000',360,180,'C','barrel','tall',3],
     'G6025':["Han's Laser",'6000×2500',440,190,'C','barrel','tall',3]};
   function machineSVG(brand,L,W,kind,roof,pult,doors){
-    var C=Math.cos(Math.PI/6),NAVY='#072730',PAPER='#F8F9F9',BLUE='#5EA7BB',LIME='#E8FC5C',GREY='#798591',ORANGE='#FF860D';
+    var D=!!document.querySelector('.ll-d'),C=Math.cos(Math.PI/6),NAVY=D?'#EFEFEF':'#072730',PAPER=D?'#0A2A34':'#F8F9F9',BLUE='#5EA7BB',LIME='#E8FC5C',GREY=D?'#9FB6BE':'#798591',ORANGE='#FF860D',LOW=D?'#134556':'#E3EFF3';
     var bb={a:1e9,b:1e9,c:-1e9,d:-1e9};
     function P(x,y,z){var X=(x-y)*C,Y=(x+y)*.5-z;if(X<bb.a)bb.a=X;if(Y<bb.b)bb.b=Y;if(X>bb.c)bb.c=X;if(Y>bb.d)bb.d=Y;return[X,Y]}
     function r(n){return Math.round(n*10)/10}
@@ -66,7 +66,7 @@
     var base=new Layer(),sheet=new Layer(1.1),cabB=new Layer(1),gan=new Layer(),head=new Layer(),cabF=new Layer(1),ex=new Layer();
     function post(x,y){return[[x,y,z0],[x,y,z1]]}
     base.box(0,0,0,L,W,34);base.box(8,8,34,L-8,W-8,38);base.box(14,14,38,L-14,W-14,41);base.box(0,-14,34,L,0,44);base.box(0,W,34,L,W+14,44);
-    var nb=Math.max(7,Math.floor(L/33)),half=L/2,lo={stroke:BLUE,fill:'#E3EFF3',pleat:'x',n:Math.floor(nb/2)+1};
+    var nb=Math.max(7,Math.floor(L/33)),half=L/2,lo={stroke:BLUE,fill:LOW,pleat:'x',n:Math.floor(nb/2)+1};
     [[2,half-2],[half+2,L-2]].forEach(function(s){base.box(s[0],-14,44,s[1],0,60,lo);base.box(s[0],W,44,s[1],W+14,60,lo)});
     sheet.box(18,18,41,L-18,W-18,46,{stroke:GREY,sw:1.1});
     var cx0=L*.22,cy0=W*.24,cx1=L*.62,cy1=W*.72;
