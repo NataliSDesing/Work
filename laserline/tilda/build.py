@@ -104,8 +104,8 @@ def chips(items,key,active):
 modal_art=accordion(NAVY2,BG,BLUE)
 cat_inner=sec_head('01','Каталог','Комплект под вашу модель станка','Выберите марку и модель — покажем готовый комплект. Самостоятельные замеры не нужны.')+f'''
 <div class="ll-cfg"><div class="ll-card ll-schema ll-reveal"><div class="ll-legend">
-<div><i style="background:{BLUE}"></i><p><b>Нижние гофры — 4 шт.</b><span>вдоль направляющих</span></p></div>
-<div><i style="background:{ORANGE}"></i><p><b>Верхние гофры — 2 шт.</b><span>по траверсе</span></p></div></div>{mach_light}</div>
+<div><i style="background:#E3EFF3;border:1px solid {BLUE}"></i><p><b>Нижние гофры — 4 шт.</b><span>вдоль направляющих</span></p></div>
+<div><i style="background:{LIME};border:1px solid {NAVY}"></i><p><b>Верхние гофры — 2 шт.</b><span>по траверсе</span></p></div></div><div class="ll-mach" id="llMachine">{mach_light}</div><p class="ll-mach-cap" id="llMachCap"></p><p class="ll-mach-hint">Наведите курсор на станок: он покажет, как работает</p></div>
 <div class="ll-steps ll-reveal" style="--d:.1s">
 <div class="ll-card ll-step"><div class="ll-label">Шаг 1</div><h3>Марка станка</h3><div id="llBrands"></div></div>
 <div class="ll-card ll-step"><div class="ll-label">Шаг 2</div><h3>Модель</h3><div id="llModels"></div></div>
@@ -221,10 +221,12 @@ JS=r'''<script>
     'Laserline Pro':{tag:'Для тяжёлой резки',desc:'Капли расплава и раскалённая окалина. Полная герметизация оптического тракта.',use:'Толстолистовой металл, тяжёлая резка',cut:'Капли расплава, раскалённая окалина',th:'до 40 мм'}};
   var st={brand:'Bystronic',model:'ByStar Fiber 3015',series:'Optimal'};
   function chips(el,items,key,pick){if(!el)return;el.className='ll-chips';el.innerHTML='';items.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='ll-chip';b.textContent=t;b.setAttribute('aria-pressed',st[key]===t);b.addEventListener('click',function(){st[key]=t;if(pick)pick();render()});el.appendChild(b)})}
+@@MACHINES@@
   function render(){
     chips($('#llBrands'),Object.keys(DATA),'brand',function(){st.model=DATA[st.brand][0]});
     chips($('#llModels'),DATA[st.brand],'model');
     chips($('#llSeries'),Object.keys(SER),'series');
+    drawMachine();
     var s=$('#llShow');if(s)s.textContent='Показать комплект: '+st.brand+' '+st.model+' · '+st.series.replace('Laserline ','')}
   render();
   /* окно «Модель гофрозащиты» */
@@ -249,6 +251,7 @@ JS=r'''<script>
     if(window.LL_FORM_ENDPOINT){fetch(window.LL_FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(done).catch(done)}else{done()}});
 })();
 </script>'''
+JS=JS.replace('@@MACHINES@@',(ROOT/'src'/'machines.js').read_text())
 blocks['99-scripts']=JS
 
 # ---------- выгрузка ----------
