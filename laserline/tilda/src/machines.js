@@ -50,7 +50,7 @@
     cabB.line(post(X0,Y0),GREY,1);cabB.line(post(X1,Y0),GREY,1);cabB.line(post(X0,Y1),GREY,1);
     cabB.line([[X0,Y0,z1],[X1,Y0,z1]],GREY,1);cabB.line([[X0,Y0,z1],[X0,Y1,z1]],GREY,1);
     gan.box(GX0-2,-24,34,GX1+2,-2,66);gan.box(GX0-2,W+2,34,GX1+2,W+26,66);gan.box(GX0,-24,66,GX1,W+26,96);
-    var up={stroke:NAVY,fill:LIME,pleat:'y',n:8};
+    var up=D?{stroke:ORANGE,fill:PAPER,pleat:'y',n:8}:{stroke:NAVY,fill:LIME,pleat:'y',n:8};
     gan.box(GX1,-20,70,GX1+14,W*.4,92,up);gan.box(GX1,W*.6,70,GX1+14,W+22,92,up);
     var hy0=W*.5-16;
     head.box(GX1,hy0,66,GX1+22,hy0+32,100);head.box(GX1+6,hy0+10,44,GX1+16,hy0+22,66);

@@ -285,6 +285,10 @@ html{scroll-behavior:smooth}
 /* появление при скролле */
 .ll-js .ll-reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.3,1);transition-delay:var(--d,0s)}
 .ll-js .ll-reveal.is-in{opacity:1;transform:none}
+/* служебные */
+.ll-only-d{display:none}
+.ll-cfg-note{margin-top:20px}
+.ll-link--acc{display:inline-block;margin-top:10px}
 /* станки в карточке каталога */
 .ll-mach{margin:4px 0 0}
 .ll-mach .mach{width:100%;height:auto;display:block}
@@ -390,9 +394,7 @@ html{background:#051A21}
 .ll-d .ll-mach-cap{color:#EFEFEF}
 .ll-d.ll-header{background:#051A21;border-color:#134556}
 .ll-d .ll-nav.is-open{background:#051A21}
-.ll-d.ll-footer{background:#0A2A34;color:#C8D6DB}
 /* серии и отзывы */
-.ll-d .ll-ser,.ll-d .ll-samples{background:#0A2A34;border-color:#134556}
 .ll-d .ll-ser:hover{border-color:var(--lime)}
 .ll-d .ll-rev--dark{background:#0C3340;border-color:#134556}
 .ll-d .ll-author i{background:#0C3340;border-color:#134556}
@@ -404,5 +406,41 @@ html{background:#051A21}
 /* лаймовые плашки: текст тёмный */
 .ll-d .ll-urgent,.ll-d .ll-urgent *,.ll-d .ll-chipx--lime{color:#051A21}
 .ll-d .ll-chipx--lime{background:var(--lime);border-color:var(--lime)}
+
+/* ===== расположение как в макете ===== */
+.ll-d .ll-eyebrow{display:none}
+#clients.ll-d .ll-eyebrow{display:flex}
+.ll-d .ll-only-d{display:block}
+.ll-d .ll-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ll-d .ll-link--acc{color:var(--orange);border-bottom:0;font-weight:400;font-size:16px}
+/* первый экран: правая верхняя карточка без рисунка, нижние — с крупным рисунком в углу */
+.ll-d .ll-ca .ll-art{display:none}
+.ll-d .ll-ca .ll-tags{margin-top:12px}
+.ll-d .ll-ca .ll-tag{font-size:17px;padding:12px 18px}
+.ll-d .ll-cb,.ll-d .ll-cc{overflow:hidden}
+.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{position:absolute;right:-70px;bottom:-110px;width:290px;max-width:none;margin:0;opacity:.9}
+.ll-d .ll-cb .ll-cb-l{margin-top:auto;color:var(--muted);font-size:16px;position:relative;z-index:1}
+.ll-d .ll-cb .ll-tags,.ll-d .ll-cc .ll-tags{position:relative;z-index:1}
+.ll-d .ll-cb .ll-tag{width:40px;height:34px;padding:0;justify-content:center}
+.ll-d .ll-cb .ll-tag svg{height:16px}
+.ll-d .ll-cb .ll-tags{margin-top:0}
+/* каталог: кнопка по ширине текста */
+.ll-d #llShow{align-self:flex-start}
+/* диагностика: мессенджеры квадратами, плашка 24 ч уже */
+.ll-d .ll-cta{grid-template-columns:1.45fr 1fr}
+.ll-d .ll-msg a{width:48px;min-height:48px;padding:0;justify-content:center}
+.ll-d .ll-msg a svg{height:18px;width:auto}
+/* гарантии: без шкалы времени */
+.ll-d .ll-gtrack{padding-top:0}
+.ll-d .ll-gtrack::before,.ll-d .ll-gtrack::after,.ll-d .ll-gtrack>div::before,.ll-d .ll-stage{display:none}
+/* заказчики: слоты пунктиром */
+.ll-d .ll-slot{border:1px dashed #5E7882;background:#0A2A34}
+/* форма: одна колонка, квадратные чекбоксы, кнопка по тексту */
+.ll-d .ll-form-grid{grid-template-columns:minmax(0,560px)}
+.ll-d .ll-ph{display:none}
+.ll-d .ll-form input[type=radio],.ll-d .ll-form input[type=checkbox]{-webkit-appearance:none;appearance:none;width:16px;height:16px;border:2px solid #9FB6BE;border-radius:0;background:transparent;margin:0;flex:0 0 auto}
+.ll-d .ll-form input[type=radio]:checked,.ll-d .ll-form input[type=checkbox]:checked{background:var(--lime);border-color:var(--lime)}
+.ll-d .ll-form .ll-btn.full{grid-column:1/2;justify-self:start;padding-left:28px;padding-right:28px}
+@media (max-width:1100px){.ll-d .ll-cta{grid-template-columns:1fr}.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{width:260px}}
 
 </style>
