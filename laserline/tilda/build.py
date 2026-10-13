@@ -265,8 +265,12 @@ HEAD=f'''<!-- Laserline: вставьте в Настройки сайта → �
 (ROOT/'head.html').write_text(HEAD)
 # то же самое для тарифов без доступа к HEAD: стили и шрифты первым блоком T123
 STYLES=HEAD.replace('<!-- Laserline: вставьте в Настройки сайта → Ещё → HTML-код для вставки внутрь HEAD -->','<!-- Laserline: первый блок T123 на странице (стили и шрифты). Ничего не показывает, только подключает оформление -->')
-(ROOT/'blocks'/'00-styles.html').write_text(STYLES+'\n')
-for k,v in blocks.items(): (ROOT/'blocks'/f'{k}.html').write_text(v+'\n')
+(ROOT/'blocks'/'00-styles.html').write_text(STYLES.replace('<!-- Laserline: первый блок T123 на странице (стили и шрифты). Ничего не показывает, только подключает оформление -->','<!-- БЛОК 1 из 13 (файл 00-styles) · стили и шрифты (ничего не показывает) · вставить в отдельный блок T123 «HTML», самым первым -->')+'\n')
+NAMES={'00-styles':'стили и шрифты (ничего не показывает)','01-header':'шапка','02-hero':'первый экран','03-catalog':'каталог и подбор станка','04-diagnostics':'экспресс-диагностика','05-series':'серии','06-video':'видео','07-guarantees':'гарантии','08-clients':'заказчики','09-delivery':'условия поставки','10-request':'форма заявки','11-footer':'подвал','99-scripts':'скрипты (последний блок)'}
+ORDER=['00-styles']+sorted(k for k in blocks if k[0]=='0' and k!='00-styles' or k[:2]=='10' or k[:2]=='11')+['99-scripts']
+def tag(k):
+    return '<!-- БЛОК %d из %d (файл %s) · %s · вставить в отдельный блок T123 «HTML» -->\n'%(ORDER.index(k)+1,len(ORDER),k,NAMES.get(k,k))
+for k,v in blocks.items(): (ROOT/'blocks'/f'{k}.html').write_text(tag(k)+v+'\n')
 prev='<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laserline · предпросмотр блоков для Тильды</title>'+HEAD+'<style>body{margin:0;background:#EFEFEF}</style></head><body>'+'\n'.join(blocks[k] for k in sorted(blocks))+'</body></html>'
 (ROOT/'preview.html').write_text(prev)
 print('ok', {k:len(v) for k,v in blocks.items()}, len(HEAD))
