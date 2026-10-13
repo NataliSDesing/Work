@@ -118,11 +118,6 @@ def machine(p, state='idle'):
     # серая панель (Han's)
     if brand == "Han's Laser":
         quad([(CAB_X0, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt - 28), (CAB_X1, CAB_Y1, zt), (CAB_X0, CAB_Y1, zt)], GREY, op=.35)
-    # табличка с названием бренда
-    nm = {'Bystronic': 'BYSTRONIC', 'Trumpf': 'TRUMPF', 'Bodor': 'BODOR', 'HSG Laser': 'HSG LASER', "Han's Laser": "HAN'S LASER"}.get(brand, '')
-    if nm:
-        u0 = CAB_X0 + 8; tx = (0 - CAB_Y1) * C; ty = CAB_Y1 / 2 - (z0 + 44)
-        cabF.items.append((2e5, '<g transform="matrix(%.3f .5 0 1 %.1f %.1f)"><text x="%d" y="0" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="15" letter-spacing="1.2" fill="%s">%s</text></g>' % (C, tx, ty, u0, NAVY, nm)))
     # допы по типам
     if kind in ('A', 'C') and brand != 'Trumpf':
         # сменный стол: выезжает по +X за кабину
