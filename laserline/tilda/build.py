@@ -257,6 +257,9 @@ HEAD=f'''<!-- Laserline: вставьте в Настройки сайта → �
 {css}
 </style>'''
 (ROOT/'head.html').write_text(HEAD)
+# то же самое для тарифов без доступа к HEAD: стили и шрифты первым блоком T123
+STYLES=HEAD.replace('<!-- Laserline: вставьте в Настройки сайта → Ещё → HTML-код для вставки внутрь HEAD -->','<!-- Laserline: первый блок T123 на странице (стили и шрифты). Ничего не показывает, только подключает оформление -->')
+(ROOT/'blocks'/'00-styles.html').write_text(STYLES+'\n')
 for k,v in blocks.items(): (ROOT/'blocks'/f'{k}.html').write_text(v+'\n')
 prev='<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laserline · предпросмотр блоков для Тильды</title>'+HEAD+'<style>body{margin:0;background:#EFEFEF}</style></head><body>'+'\n'.join(blocks[k] for k in sorted(blocks))+'</body></html>'
 (ROOT/'preview.html').write_text(prev)
