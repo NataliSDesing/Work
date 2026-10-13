@@ -274,8 +274,6 @@ if DARK:
 css=(ROOT/'src'/'ll.css').read_text()
 if DARK: css+='\n'+(ROOT/'src'/'ll-dark.css').read_text()
 HEAD=f'''<!-- Laserline: вставьте в Настройки сайта → Ещё → HTML-код для вставки внутрь HEAD -->
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 {css}
 </style>'''

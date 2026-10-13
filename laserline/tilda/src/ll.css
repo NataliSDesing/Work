@@ -1,7 +1,13 @@
-/* ===== Laserline · стили для Тильды (светлая тема). Всё под классом .ll ===== */
+/* ===== Laserline · стили для Тильды (светлая тема). Всё под классом .ll =====
+   Шрифтов ровно два: Magistral CTT (заголовки, цифры) и MagistralC (весь остальной текст).
+   Загрузите их в Тильде: Настройки сайта → Шрифты, названия «Magistral CTT» и «MagistralC».
+   Если подключаете файлами, раскомментируйте и подставьте адреса:
+   @font-face{font-family:"Magistral CTT";src:url(АДРЕС_CTT.woff2) format("woff2");font-weight:700;font-display:swap}
+   @font-face{font-family:"MagistralC";src:url(АДРЕС_C.woff2) format("woff2");font-weight:400;font-display:swap}
+   @font-face{font-family:"MagistralC";src:url(АДРЕС_C_BOLD.woff2) format("woff2");font-weight:700;font-display:swap} */
 html{scroll-behavior:smooth}
 .ll{--bg:#EFEFEF;--paper:#F8F9F9;--navy:#072730;--navy2:#0D3744;--blue:#5EA7BB;--grey:#798591;--lime:#E8FC5C;--orange:#FF860D;--line:#C9D0D5;--muted:#4C5E66;--ondark:#9FB6BE;
-  --f-disp:"Magistral CTT","MagistralCTT","Exo 2","Arial Narrow",sans-serif;--f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --f-disp:"Magistral CTT","MagistralCTT","Arial Narrow",Arial,sans-serif;--f-body:"MagistralC","Magistral C","Arial Narrow",Arial,sans-serif;--f-mono:var(--f-body);
   --gut:24px;font-family:var(--f-body);font-size:16px;line-height:1.5;color:var(--navy);-webkit-font-smoothing:antialiased;text-align:left}
 .ll *,.ll *::before,.ll *::after{box-sizing:border-box}
 .ll h1,.ll h2,.ll h3,.ll h4,.ll p,.ll ul,.ll figure{margin:0;padding:0}
