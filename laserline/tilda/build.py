@@ -41,6 +41,12 @@ def machine(fill,stroke,up,low):
     return s.svg()
 def accordion(fill,stroke,acc,n=16):
     s=Scene(fill,stroke,1.2); s.box(0,0,0,260,70,50,stroke=acc,n=n); s.box(260,0,0,290,70,50); s.box(-30,0,0,0,70,50); return s.svg()
+def photocards(front,back,bg,acc):
+    """две фото-карточки (полароид), линейный стиль, без скруглений"""
+    return (f'<svg class="ll-wire" viewBox="0 0 300 262" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke-width="1.6">'
+      f'<g transform="rotate(7 195 130)"><rect x="125" y="14" width="150" height="196" fill="{bg}" stroke="{back}"/><rect x="138" y="27" width="124" height="128" stroke="{back}"/><path d="M138 135 L168 100 L190 122 L214 88 L262 135" stroke="{back}"/><path d="M138 172 H210 M138 186 H186" stroke="{back}"/></g>'
+      f'<g transform="rotate(-6 115 150)"><rect x="28" y="44" width="164" height="206" fill="{bg}" stroke="{front}"/><rect x="42" y="58" width="136" height="136" stroke="{front}"/>'
+      f'<path d="M42 176 L78 130 L102 154 L128 112 L178 176" stroke="{front}"/><circle cx="148" cy="86" r="9" stroke="{acc}"/><path d="M42 214 H112 M42 228 H92" stroke="{front}"/></g></svg>')
 def photos(fill,stroke,acc):
     s=Scene(fill,stroke,1.2); s.box(0,0,0,120,90,5); s.box(40,50,12,160,140,17,stroke=acc); s.box(60,70,17,70,80,40); return s.svg()
 def layers(fill,stroke,acc):
@@ -93,7 +99,7 @@ blocks['02-hero']=f'''<section class="ll ll-sec ll-hero" id="top"><div class="ll
 <div class="ll-art">{CA_ART}</div>
 <div class="ll-tags"><span class="ll-tag">Bystronic</span><span class="ll-tag">Trumpf</span><span class="ll-tag">Bodor</span><span class="ll-tag">HSG Laser</span><span class="ll-tag">Han's Laser</span><span class="ll-tag">+5 марок</span></div></a>
 <a class="ll-card ll-cb ll-reveal" style="--d:.15s" href="#diagnostics"><h3>Экспресс-диагностика: расчёт за 2 часа по двум фото</h3>{ARROW}
-<div class="ll-art">{photos(PAPER,GREY,NAVY)}</div>
+<div class="ll-art">{photocards(NAVY,GREY,PAPER,BLUE)}</div>
 <span class="ll-only-d ll-cb-l">Инженер на связи:</span><div class="ll-tags"><span class="ll-tag">{SOC['tg'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">Telegram</i></span><span class="ll-tag">{SOC['max'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">MAX</i></span><span class="ll-tag">{SOC['vk'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">VK</i></span></div></a>
 <a class="ll-card ll-cc ll-reveal" style="--d:.2s" href="#series"><h3>Серии Laserline под условия резки</h3>{ARROW}
 <div class="ll-art">{layers(PAPER,GREY,NAVY)}</div>
@@ -110,7 +116,7 @@ modal_art=accordion(NAVY2,BG,BLUE)
 cat_inner=sec_head('01','Каталог','Комплект под вашу модель станка','Выберите марку и модель — покажем готовый комплект. Самостоятельные замеры не нужны.')+f'''
 <div class="ll-cfg"><div class="ll-card ll-schema ll-reveal"><div class="ll-legend">
 <div><i style="background:#E3EFF3;border:1px solid {BLUE}"></i><p><b>Нижние гофры — 4 шт.</b><span>вдоль направляющих</span></p></div>
-<div><i style="background:{LIME};border:1px solid {NAVY}"></i><p><b>Верхние гофры — 2 шт.</b><span>по траверсе</span></p></div></div><div class="ll-mach" id="llMachine">{mach_light}</div><p class="ll-mach-cap" id="llMachCap"></p><p class="ll-mach-hint">Наведите курсор на станок: он покажет, как работает</p></div>
+<div><i style="background:{LIME};border:1px solid {NAVY}"></i><p><b>Верхние гофры — 2 шт.</b><span>по траверсе</span></p></div></div><div class="ll-mach" id="llMachine">{mach_light}</div><p class="ll-mach-cap" id="llMachCap"></p></div>
 <div class="ll-steps ll-reveal" style="--d:.1s">
 <div class="ll-card ll-step"><div class="ll-label">Шаг 1</div><h3>Марка станка</h3><div id="llBrands"></div></div>
 <div class="ll-card ll-step"><div class="ll-label">Шаг 2</div><h3>Модель</h3><div id="llModels"></div></div>

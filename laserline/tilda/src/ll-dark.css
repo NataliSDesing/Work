@@ -56,7 +56,8 @@ html{background:#051A21}
 .ll-d .ll-main-img[src=""]{display:none}
 .ll-d .ll-ca .ll-tag{font-size:17px;padding:12px 18px}
 .ll-d .ll-cb,.ll-d .ll-cc{overflow:hidden}
-.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{position:absolute;right:-70px;bottom:-110px;width:290px;max-width:none;margin:0;opacity:.9}
+.ll-d .ll-cc .ll-art{position:absolute;right:-70px;bottom:-110px;width:290px;max-width:none;margin:0;opacity:.9}
+.ll-d .ll-cb .ll-art{position:absolute;right:16px;bottom:-4px;width:215px;max-width:none;margin:0}
 .ll-d .ll-cb .ll-cb-l{margin-top:auto;color:var(--muted);font-size:16px;position:relative;z-index:1}
 .ll-d .ll-cb .ll-tags,.ll-d .ll-cc .ll-tags{position:relative;z-index:1}
 .ll-d .ll-cb .ll-tag{width:40px;height:34px;padding:0;justify-content:center}
