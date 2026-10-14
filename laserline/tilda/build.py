@@ -80,14 +80,17 @@ blocks['01-header']=f'''<header class="ll ll-header"><div class="ll-wrap">
 </div></header>'''
 # ---------- 02 hero ----------
 mach_dark=machine(NAVY,BG,LIME,BLUE)
+# тёмный макет: в главной карточке рендер гофры (картинка, адрес вставляется в Тильде), станок-схема переехала в правую карточку
+MAIN_ART = '<img class="ll-main-img" src="" alt="Гофрозащита для лазерных станков" width="425" height="381">' if DARK else f'<div class="ll-main-art">{mach_dark}</div>'
+CA_ART = mach_dark if DARK else accordion(PAPER,GREY,NAVY)
 blocks['02-hero']=f'''<section class="ll ll-sec ll-hero" id="top"><div class="ll-wrap"><div class="ll-bento">
 <div class="ll-card ll-card--dark ll-main ll-reveal"><div>
 <h1 class="ll-h1">Гофрозащита для лазерных станков раскроя металла</h1>
 <p class="ll-body">Комплект под марку и модель станка. Три серии — под толщину металла, окалину и температуру в зоне резания.</p></div>
 <a class="ll-btn ll-btn--lime" href="#catalog">Подобрать комплект</a>
-<div class="ll-main-art">{mach_dark}</div>{ARROW}</div>
+{MAIN_ART}{ARROW}</div>
 <a class="ll-card ll-ca ll-reveal" style="--d:.1s" href="#catalog"><h3>Подбор комплекта по модели станка</h3>{ARROW}
-<div class="ll-art">{accordion(PAPER,GREY,NAVY)}</div>
+<div class="ll-art">{CA_ART}</div>
 <div class="ll-tags"><span class="ll-tag">Bystronic</span><span class="ll-tag">Trumpf</span><span class="ll-tag">Bodor</span><span class="ll-tag">HSG Laser</span><span class="ll-tag">Han's Laser</span><span class="ll-tag">+5 марок</span></div></a>
 <a class="ll-card ll-cb ll-reveal" style="--d:.15s" href="#diagnostics"><h3>Экспресс-диагностика: расчёт за 2 часа по двум фото</h3>{ARROW}
 <div class="ll-art">{photos(PAPER,GREY,NAVY)}</div>

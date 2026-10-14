@@ -401,8 +401,6 @@ html{background:#051A21}
 /* форма */
 .ll-d .ll-form input[type=text],.ll-d .ll-form input[type=email],.ll-d .ll-form input[type=tel]{background:#0A2A34;border-color:#5E7882;color:#EFEFEF}
 .ll-d .ll-ok{color:#051A21}
-/* первый экран: станок крупнее, обрезан краем карточки */
-@media (min-width:1101px){.ll-d .ll-main-art{width:74%;max-width:700px;right:-90px;bottom:-90px}}
 /* лаймовые плашки: текст тёмный */
 .ll-d .ll-urgent,.ll-d .ll-urgent *,.ll-d .ll-chipx--lime{color:#051A21}
 .ll-d .ll-chipx--lime{background:var(--lime);border-color:var(--lime)}
@@ -414,8 +412,12 @@ html{background:#051A21}
 .ll-d .ll-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .ll-d .ll-link--acc{color:var(--orange);border-bottom:0;font-weight:400;font-size:16px}
 /* первый экран: правая верхняя карточка без рисунка, нижние — с крупным рисунком в углу */
-.ll-d .ll-ca .ll-art{display:none}
-.ll-d .ll-ca .ll-tags{margin-top:12px}
+.ll-d .ll-ca{overflow:hidden}
+.ll-d .ll-ca .ll-art{position:absolute;right:-140px;top:80px;width:520px;max-width:none;margin:0}
+.ll-d .ll-ca .ll-tags{margin-top:auto;position:relative;z-index:1}
+.ll-d .ll-main{overflow:hidden}
+.ll-d .ll-main-img{position:absolute;right:0;bottom:0;width:53%;height:auto;max-width:425px;display:block}
+.ll-d .ll-main-img[src=""]{display:none}
 .ll-d .ll-ca .ll-tag{font-size:17px;padding:12px 18px}
 .ll-d .ll-cb,.ll-d .ll-cc{overflow:hidden}
 .ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{position:absolute;right:-70px;bottom:-110px;width:290px;max-width:none;margin:0;opacity:.9}
@@ -442,5 +444,7 @@ html{background:#051A21}
 .ll-d .ll-form input[type=radio]:checked,.ll-d .ll-form input[type=checkbox]:checked{background:var(--lime);border-color:var(--lime)}
 .ll-d .ll-form .ll-btn.full{grid-column:1/2;justify-self:start;padding-left:28px;padding-right:28px}
 @media (max-width:1100px){.ll-d .ll-cta{grid-template-columns:1fr}.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{width:260px}}
+.ll-d .ll-cc{display:flex;flex-direction:column}
+.ll-d .ll-cc .ll-tags{margin-top:auto}
 
 </style>
