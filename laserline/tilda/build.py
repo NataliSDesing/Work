@@ -57,7 +57,7 @@ def lifetime(fill,stroke,acc):
     s=Scene(fill,stroke,1.2)
     for i,h in enumerate((18,30,44,60,78)): s.box(i*34,0,0,i*34+26,70,h,stroke=(acc if i==4 else None))
     return s.svg()
-PARCEL='B'   # вариант иллюстрации в блоке формы: A (раскладка), B (изометрия), C (карточки на петлях)
+PARCEL='A'   # вариант иллюстрации в блоке формы: A (раскладка), B (изометрия), C (карточки на петлях)
 def _pats(g,bl,o):
     out='<defs>'
     for k,c in (('pc-g',g),('pc-b',bl),('pc-o',o)):
