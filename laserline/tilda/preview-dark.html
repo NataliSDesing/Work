@@ -449,6 +449,18 @@ html{background:#051A21}
 @media (max-width:1100px){.ll-d .ll-cta{grid-template-columns:1fr}.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{width:260px}}
 .ll-d .ll-cc{display:flex;flex-direction:column}
 .ll-d .ll-cc .ll-tags{margin-top:auto}
+/* планшет и телефон: рисунки в карточках первого экрана не наезжают на текст */
+@media (max-width:1100px){
+  .ll-d .ll-ca .ll-art,.ll-d .ll-cb .ll-art,.ll-d .ll-cc .ll-art{position:static;width:100%;max-width:300px;margin:6px 0 10px;opacity:1}
+  .ll-d .ll-ca .ll-art{max-width:none;overflow:hidden;max-height:230px}
+  .ll-d .ll-ca .ll-tags{margin-top:12px}
+  .ll-d .ll-cb .ll-cb-l{margin-top:0}
+}
+@media (max-width:640px){
+  .ll-d .ll-main{display:flex;flex-direction:column}
+  .ll-d .ll-main-img{position:static;width:100%;max-width:none;height:auto;margin-top:18px}
+  .ll-d .ll-main-img[src=""]{display:none}
+}
 
 </style><style>body{margin:0;background:#051A21}</style></head><body><header class="ll ll-d ll-header"><div class="ll-wrap">
 <a class="ll-logo" href="#top" aria-label="Laserline — на главную"><svg width="635" height="131" viewBox="0 0 635 131" fill="none" xmlns="http://www.w3.org/2000/svg">
