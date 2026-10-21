@@ -75,7 +75,7 @@ html{background:#051A21}
 /* заказчики: слоты пунктиром */
 .ll-d .ll-slot{border:1px dashed #5E7882;background:#0A2A34}
 /* форма: одна колонка, квадратные чекбоксы, кнопка по тексту */
-.ll-d .ll-form-grid{grid-template-columns:minmax(0,560px)}
+.ll-d .ll-form-grid{grid-template-columns:minmax(0,560px) minmax(0,1fr);align-items:center}
 .ll-d .ll-ph{display:none}
 .ll-d .ll-form input[type=radio],.ll-d .ll-form input[type=checkbox]{-webkit-appearance:none;appearance:none;width:16px;height:16px;border:2px solid #9FB6BE;border-radius:0;background:transparent;margin:0;flex:0 0 auto}
 .ll-d .ll-form input[type=radio]:checked,.ll-d .ll-form input[type=checkbox]:checked{background:var(--lime);border-color:var(--lime)}

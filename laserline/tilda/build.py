@@ -57,6 +57,28 @@ def lifetime(fill,stroke,acc):
     s=Scene(fill,stroke,1.2)
     for i,h in enumerate((18,30,44,60,78)): s.box(i*34,0,0,i*34+26,70,h,stroke=(acc if i==4 else None))
     return s.svg()
+def parcel(fill,stroke,c1,c2,c3):
+    """цифровой паспорт (лист с таблицей), конверт и три образца ткани 5x5 см рядом"""
+    s=Scene(fill,stroke,1.3)
+    def path(pts,col,sw=1.2,close=False,depth=210):
+        d='M'+' L'.join('%.1f %.1f'%P(*q) for q in pts)+(' Z' if close else '')
+        s.items.append((depth,'<path d="%s" fill="none" stroke="%s" stroke-width="%s"/>'%(d,col,sw)))
+    # лист паспорта
+    s.box(0,0,0,170,230,4)
+    z=4
+    path([(16,22,z),(110,22,z)],stroke,1.6); path([(16,36,z),(80,36,z)],stroke)
+    for i in range(5): path([(16,70+i*28,z),(154,70+i*28,z)],stroke)
+    path([(16,70,z),(16,182,z)],stroke); path([(84,70,z),(84,182,z)],stroke); path([(154,70,z),(154,182,z)],stroke)
+    path([(122,16,z),(154,16,z),(154,48,z),(122,48,z)],c3,1.4,True); path([(130,24,z),(146,24,z),(146,40,z),(130,40,z)],c3,1.2,True)
+    # конверт поверх листа, ближе к зрителю
+    s.box(40,120,4,200,236,18)
+    path([(40,120,18),(120,178,18),(200,120,18)],stroke,1.3,depth=400)
+    path([(40,236,18),(100,182,18)],stroke,1.2,depth=400); path([(200,236,18),(140,182,18)],stroke,1.2,depth=400)
+    # три образца ткани с складками
+    s.box(210,10,0,268,68,5,stroke=c1,pleat='y',n=6)
+    s.box(210,80,0,268,138,5,stroke=c2,pleat='y',n=6)
+    s.box(210,150,0,268,208,5,stroke=c3,pleat='y',n=6)
+    return s.svg(pad=10)
 def photos(fill,stroke,acc):
     s=Scene(fill,stroke,1.2); s.box(0,0,0,120,90,5); s.box(40,50,12,160,140,17,stroke=acc); s.box(60,70,17,70,80,40); return s.svg()
 def layers(fill,stroke,acc):
@@ -207,7 +229,7 @@ fm=f'''<div class="ll-form-grid"><div><div class="ll-head" style="margin-bottom:
 <label class="ll-consent full"><input type="checkbox" name="agree" required><span>Согласен на обработку персональных данных в соответствии с <a class="ll-link" href="#" style="border-color:var(--lime)">политикой конфиденциальности</a></span></label>
 <p class="ll-hint full">Ответит инженер-конструктор. Адрес для отправки образцов уточним в переписке.</p></form>
 <div class="ll-ok" id="llOk" role="status">Спасибо! Заявка принята — инженер ответит в рабочее время.</div></div>
-<div class="ll-ph ll-cap">Фото: фирменный конверт с тремя образцами 5×5 см (Econom, Optimal, Pro) и распечатка цифрового паспорта</div></div>'''
+<div class="ll-parcel ll-reveal" style="--d:.1s">{parcel(PAPER,NAVY,GREY,BLUE,ORANGE)}</div></div>'''
 blocks['10-request']=wrap(fm,id='request',dark=True)
 # ---------- 11 футер ----------
 logo_light_cls=logo_light.replace('<svg','<svg class="logo"',1)
