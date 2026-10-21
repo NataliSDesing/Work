@@ -97,7 +97,7 @@ blocks['01-header']=f'''<header class="ll ll-header"><div class="ll-wrap">
 # ---------- 02 hero ----------
 mach_dark=machine(NAVY,BG,LIME,BLUE)
 # тёмный макет: в главной карточке рендер гофры (картинка, адрес вставляется в Тильде), станок-схема переехала в правую карточку
-MAIN_ART = '<img class="ll-main-img" src="" alt="Гофрозащита для лазерных станков" width="425" height="381">' if DARK else f'<div class="ll-main-art">{mach_dark}</div>'
+MAIN_ART = '<img class="ll-main-img" src="https://static.tildacdn.com/tild6363-3836-4336-b461-323530623436/image_1.png" alt="Гофрозащита для лазерных станков" width="425" height="381">' if DARK else f'<div class="ll-main-art">{mach_dark}</div>'
 CA_ART = mach_dark if DARK else accordion(PAPER,GREY,NAVY)
 blocks['02-hero']=f'''<section class="ll ll-sec ll-hero" id="top"><div class="ll-wrap"><div class="ll-bento">
 <div class="ll-card ll-card--dark ll-main ll-reveal"><div>

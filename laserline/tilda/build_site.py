@@ -37,7 +37,7 @@ js = js.replace(".then(done).catch(done)", ".then(function(r){if(r.ok)done();els
 # --- HTML ---
 order = ['01-header', '02-hero', '03-catalog', '04-diagnostics', '05-series', '06-video', '07-guarantees', '08-clients', '09-delivery', '10-request', '11-footer']
 body = '\n'.join(blocks[k] for k in order)
-body = body.replace('src="" alt="Гофрозащита для лазерных станков"', 'src="assets/img/bellows-render.png" alt="Гофрозащита для лазерных станков" onerror="this.style.display=\'none\'"')
+# рендер гофры берётся с адреса, который указан в build.py (MAIN_ART)
 html = f'''<!doctype html>
 <html lang="ru">
 <head>
