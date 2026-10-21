@@ -57,28 +57,49 @@ def lifetime(fill,stroke,acc):
     s=Scene(fill,stroke,1.2)
     for i,h in enumerate((18,30,44,60,78)): s.box(i*34,0,0,i*34+26,70,h,stroke=(acc if i==4 else None))
     return s.svg()
+PARCEL='B'   # вариант иллюстрации в блоке формы: A (раскладка), B (изометрия), C (карточки на петлях)
+def _pats(g,bl,o):
+    out='<defs>'
+    for k,c in (('pc-g',g),('pc-b',bl),('pc-o',o)):
+        out+='<pattern id="%s" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H8" stroke="%s" stroke-width="1.4"/></pattern>'%(k,c)
+    return out+'</defs>'
 def parcel(fill,stroke,c1,c2,c3):
-    """цифровой паспорт (лист с таблицей), конверт и три образца ткани 5x5 см рядом"""
-    s=Scene(fill,stroke,1.3)
-    def path(pts,col,sw=1.2,close=False,depth=210):
-        d='M'+' L'.join('%.1f %.1f'%P(*q) for q in pts)+(' Z' if close else '')
-        s.items.append((depth,'<path d="%s" fill="none" stroke="%s" stroke-width="%s"/>'%(d,col,sw)))
-    # лист паспорта
-    s.box(0,0,0,170,230,4)
-    z=4
-    path([(16,22,z),(110,22,z)],stroke,1.6); path([(16,36,z),(80,36,z)],stroke)
-    for i in range(5): path([(16,70+i*28,z),(154,70+i*28,z)],stroke)
-    path([(16,70,z),(16,182,z)],stroke); path([(84,70,z),(84,182,z)],stroke); path([(154,70,z),(154,182,z)],stroke)
-    path([(122,16,z),(154,16,z),(154,48,z),(122,48,z)],c3,1.4,True); path([(130,24,z),(146,24,z),(146,40,z),(130,40,z)],c3,1.2,True)
-    # конверт поверх листа, ближе к зрителю
-    s.box(40,120,4,200,236,18)
-    path([(40,120,18),(120,178,18),(200,120,18)],stroke,1.3,depth=400)
-    path([(40,236,18),(100,182,18)],stroke,1.2,depth=400); path([(200,236,18),(140,182,18)],stroke,1.2,depth=400)
-    # три образца ткани с складками
-    s.box(210,10,0,268,68,5,stroke=c1,pleat='y',n=6)
-    s.box(210,80,0,268,138,5,stroke=c2,pleat='y',n=6)
-    s.box(210,150,0,268,208,5,stroke=c3,pleat='y',n=6)
-    return s.svg(pad=10)
+    """цифровой паспорт и три образца ткани 5x5 см; анимация идёт сама (CSS в ll.css)"""
+    F,S,G,BL,OR=fill,stroke,c1,c2,c3
+    if PARCEL=='A':
+        return ('<svg class="ll-wire pc pc-A" viewBox="-10 -30 680 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke-width="1.6">'+_pats(G,BL,OR)+
+         '<g class="a-sheet"><g transform="rotate(-7 150 200)"><rect x="40" y="30" width="230" height="310" fill="%(F)s" stroke="%(S)s"/><path d="M62 62H190M62 82H150" stroke="%(S)s" stroke-width="2"/>'
+         '<path d="M62 130H248M62 166H248M62 202H248M62 238H248M62 274H248M62 130V274M150 130V274M248 130V274" stroke="%(G)s" stroke-width="1.2"/>'
+         '<rect x="206" y="52" width="42" height="42" stroke="%(OR)s"/><rect x="216" y="62" width="22" height="22" stroke="%(OR)s"/></g></g>'
+         '<g class="a1"><g transform="rotate(-9 400 100)"><rect x="350" y="30" width="96" height="96" fill="url(#pc-g)" stroke="%(G)s"/></g></g>'
+         '<g class="a2"><g transform="rotate(5 470 150)"><rect x="420" y="60" width="96" height="96" fill="url(#pc-b)" stroke="%(BL)s"/></g></g>'
+         '<g class="a3"><g transform="rotate(14 500 230)"><rect x="452" y="116" width="96" height="96" fill="url(#pc-o)" stroke="%(OR)s"/></g></g>'
+         '<g class="a-env"><g transform="rotate(3 330 270)"><rect x="170" y="190" width="300" height="190" fill="%(F)s" stroke="%(S)s"/><path d="M170 190L320 300L470 190M170 380L270 285M470 380L370 285" stroke="%(S)s"/></g></g></svg>')%dict(F=F,S=S,G=G,BL=BL,OR=OR)
+    if PARCEL=='C':
+        def card(x,y,col,pat,cls):
+            return ('<g class="%s"><g transform="translate(%d %d)"><rect width="150" height="230" fill="%s" stroke="%s"/><circle cx="75" cy="22" r="7" stroke="%s"/>'
+                    '<path d="M24 54H126M24 70H92" stroke="%s" stroke-width="1.5"/><rect x="24" y="92" width="102" height="102" fill="url(#%s)" stroke="%s"/><path d="M24 208H100" stroke="%s"/></g></g>')%(cls,x,y,F,S,col,S,pat,col,G)
+        return ('<svg class="ll-wire pc pc-C" viewBox="0 0 560 330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" stroke-width="1.6">'+_pats(G,BL,OR)+
+           '<path d="M85 82L85 0M280 52L280 0M475 22L475 0" stroke="%s"/>'%G+card(10,60,G,'pc-g','c1')+card(205,30,BL,'pc-b','c2')+card(400,0,OR,'pc-o','c3')+'<path d="M0 316H560" stroke="%s"/></svg>'%G)
+    # B: изометрия — паспорт и три образца, образцы и закладка выдвигаются
+    s=Scene(F,S,1.4)
+    s.box(0,0,0,150,205,16)
+    def wrap(cls):
+        d,t=s.items[-1]; s.items[-1]=(d,'<g class="%s">%s</g>'%(cls,t))
+    s.box(150,24,2,162,64,14,stroke=OR); wrap('b-tab')
+    def path(pts,col,sw=1.3):
+        d='M'+' L'.join('%.1f %.1f'%P(*q) for q in pts)
+        s.items.append((300,'<path d="%s" fill="none" stroke="%s" stroke-width="%s"/>'%(d,col,sw)))
+    z=16
+    path([(18,28,z),(112,28,z)],S,1.8); path([(18,44,z),(84,44,z)],S,1.3)
+    for k in range(5): path([(18,84+k*24,z),(132,84+k*24,z)],G,1.1)
+    path([(18,84,z),(18,180,z)],G,1.1); path([(75,84,z),(75,180,z)],G,1.1); path([(132,84,z),(132,180,z)],G,1.1)
+    s.box(196,0,0,280,84,7,stroke=G,pleat='y',n=8); wrap('b1')
+    s.box(196,100,0,280,184,7,stroke=BL,pleat='y',n=8); wrap('b2')
+    s.box(196,200,0,280,284,7,stroke=OR,pleat='y',n=8); wrap('b3')
+    out=s.svg(pad=14).replace('class="ll-wire"','class="ll-wire pc pc-B"')
+    m=re.search(r'viewBox="(-?[\d.]+) (-?[\d.]+) ([\d.]+) ([\d.]+)"',out); x,y,w,h=map(float,m.groups())
+    return out.replace(m.group(0),'viewBox="%.0f %.0f %.0f %.0f"'%(x-20,y-20,w+60,h+50))
 def photos(fill,stroke,acc):
     s=Scene(fill,stroke,1.2); s.box(0,0,0,120,90,5); s.box(40,50,12,160,140,17,stroke=acc); s.box(60,70,17,70,80,40); return s.svg()
 def layers(fill,stroke,acc):

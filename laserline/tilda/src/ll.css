@@ -313,6 +313,23 @@ html{scroll-behavior:smooth}
 @keyframes lldraw{0%{stroke-dashoffset:1}70%,100%{stroke-dashoffset:0}}
 @keyframes llblink{50%{opacity:.2}}
 @media (prefers-reduced-motion:reduce){.mach .m-gantry,.mach .m-head,.mach .cut,.mach .m-beam{animation:none!important}.mach .cut,.mach .cut2{opacity:1;stroke-dashoffset:0}}
+/* иллюстрация формы: анимация идёт сама, без реакции на мышь */
+.pc *{transform-box:fill-box}
+.pc-A .a-sheet{animation:pcSheet 6s ease-in-out infinite}
+.pc-A .a1{animation:pcUp 4.8s ease-in-out infinite}.pc-A .a2{animation:pcUp 4.8s ease-in-out -1.6s infinite}.pc-A .a3{animation:pcUp 4.8s ease-in-out -3.2s infinite}
+.pc-A .a-env{animation:pcEnv 6s ease-in-out infinite}
+@keyframes pcUp{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-18px)}}
+@keyframes pcSheet{0%,100%{transform:rotate(0)}50%{transform:rotate(-1.5deg)}}
+@keyframes pcEnv{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.pc-B .b1{animation:pcOut 4.2s ease-in-out infinite}.pc-B .b2{animation:pcOut 4.2s ease-in-out .35s infinite}.pc-B .b3{animation:pcOut 4.2s ease-in-out .7s infinite}
+.pc-B .b-tab{animation:pcTab 4.2s ease-in-out infinite}
+@keyframes pcOut{0%,100%{transform:translate(0,0)}45%,60%{transform:translate(22px,13px)}}
+@keyframes pcTab{0%,100%{transform:translate(0,0)}45%,60%{transform:translate(10px,6px)}}
+.pc-C .c1{transform-origin:85px 82px;transform-box:view-box;animation:pcSway 4.4s ease-in-out infinite}
+.pc-C .c2{transform-origin:280px 52px;transform-box:view-box;animation:pcSway 4.4s ease-in-out -1.4s infinite}
+.pc-C .c3{transform-origin:475px 22px;transform-box:view-box;animation:pcSway 4.4s ease-in-out -2.8s infinite}
+@keyframes pcSway{0%,100%{transform:rotate(-2.6deg)}50%{transform:rotate(2.6deg)}}
+@media (prefers-reduced-motion:reduce){.pc *{animation:none!important}}
 @media (prefers-reduced-motion:reduce){.ll-js .ll-reveal{opacity:1;transform:none;transition:none}.ll-modal-box,.ll-modal.is-open{animation:none}html{scroll-behavior:auto}}
 
 /* ПЛАНШЕТ */
