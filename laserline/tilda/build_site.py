@@ -98,6 +98,11 @@ for n in ('logo-dark.svg', 'logo-light.svg'): shutil.copy(ROOT / 'assets' / n, O
 Исходники генератора и светлая версия лежат в `laserline/tilda/` (скрипт `build_site.py` пересобирает эту папку).
 ''')
 
+# --- один самодостаточный файл: стили и скрипты внутри ---
+one = html.replace('<link rel="stylesheet" href="assets/css/style.css">', '<style>\n' + (OUT / 'assets/css/style.css').read_text().replace('url(../fonts/', 'url(assets/fonts/') + '</style>')
+one = one.replace('<script src="assets/js/script.js"></script>', '<script>\n' + js + '\n</script>')
+(OUT.parent / 'laserline-dark.html').write_text(one)
+
 # --- архив ---
 zp = OUT.parent / 'laserline-site.zip'
 if zp.exists(): zp.unlink()

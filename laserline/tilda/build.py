@@ -47,6 +47,16 @@ def photocards(front,back,bg,acc):
       f'<g transform="rotate(7 195 130)"><rect x="125" y="14" width="150" height="196" fill="{bg}" stroke="{back}"/><rect x="138" y="27" width="124" height="128" stroke="{back}"/><path d="M138 135 L168 100 L190 122 L214 88 L262 135" stroke="{back}"/><path d="M138 172 H210 M138 186 H186" stroke="{back}"/></g>'
       f'<g transform="rotate(-6 115 150)"><rect x="28" y="44" width="164" height="206" fill="{bg}" stroke="{front}"/><rect x="42" y="58" width="136" height="136" stroke="{front}"/>'
       f'<path d="M42 176 L78 130 L102 154 L128 112 L178 176" stroke="{front}"/><circle cx="148" cy="86" r="9" stroke="{acc}"/><path d="M42 214 H112 M42 228 H92" stroke="{front}"/></g></svg>')
+def nameplate(fill,stroke,acc):
+    """шильдик станка: табличка с строками текста и винтами"""
+    s=Scene(fill,stroke,1.2); s.box(0,0,0,170,100,12); s.box(14,14,12,110,24,14); s.box(14,34,12,140,42,14); s.box(14,52,12,90,60,14,stroke=acc)
+    for x,y in ((6,6),(156,6),(6,86),(156,86)): s.box(x,y,12,x+8,y+8,15)
+    return s.svg()
+def lifetime(fill,stroke,acc):
+    """срок службы: столбики растут во времени, последний выделен"""
+    s=Scene(fill,stroke,1.2)
+    for i,h in enumerate((18,30,44,60,78)): s.box(i*34,0,0,i*34+26,70,h,stroke=(acc if i==4 else None))
+    return s.svg()
 def photos(fill,stroke,acc):
     s=Scene(fill,stroke,1.2); s.box(0,0,0,120,90,5); s.box(40,50,12,160,140,17,stroke=acc); s.box(60,70,17,70,80,40); return s.svg()
 def layers(fill,stroke,acc):
@@ -80,7 +90,7 @@ blocks={}
 # ---------- 01 шапка ----------
 blocks['01-header']=f'''<header class="ll ll-header"><div class="ll-wrap">
 <a class="ll-logo" href="#top" aria-label="Laserline — на главную">{logo_dark}</a>
-<nav class="ll-nav" id="llNav" aria-label="Основное меню"><a href="#catalog">Каталог</a><a href="#series">Серии</a><a href="#diagnostics">Экспресс-диагностика</a><a href="#guarantees">Гарантии</a><a href="#delivery">Условия</a><a href="#video">Видео</a><a href="#contacts">Контакты</a></nav>
+<nav class="ll-nav" id="llNav" aria-label="Основное меню"><a href="#catalog">Каталог</a><a href="#series">Серии</a><a href="#consult">Консультация инженера</a><a href="#guarantees">Гарантии</a><a href="#delivery">Условия</a><a href="#video">Видео</a><a href="#contacts">Контакты</a></nav>
 <a class="ll-btn" href="#request">Связаться с инженером</a>
 <button class="ll-burger" id="llBurger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="llNav"><i></i><i></i><i></i></button>
 </div></header>'''
@@ -98,7 +108,7 @@ blocks['02-hero']=f'''<section class="ll ll-sec ll-hero" id="top"><div class="ll
 <a class="ll-card ll-ca ll-reveal" style="--d:.1s" href="#catalog"><h3>Подбор комплекта по модели станка</h3>{ARROW}
 <div class="ll-art">{CA_ART}</div>
 <div class="ll-tags"><span class="ll-tag">Bystronic</span><span class="ll-tag">Trumpf</span><span class="ll-tag">Bodor</span><span class="ll-tag">HSG Laser</span><span class="ll-tag">Han's Laser</span><span class="ll-tag">+5 марок</span></div></a>
-<a class="ll-card ll-cb ll-reveal" style="--d:.15s" href="#diagnostics"><h3>Экспресс-диагностика: расчёт за 2 часа по двум фото</h3>{ARROW}
+<a class="ll-card ll-cb ll-reveal" style="--d:.15s" href="#consult"><h3>Консультация инженера: бесплатно, по фото шильдика и гофр</h3>{ARROW}
 <div class="ll-art">{photocards(NAVY,GREY,PAPER,BLUE)}</div>
 <span class="ll-only-d ll-cb-l">Инженер на связи:</span><div class="ll-tags"><span class="ll-tag">{SOC['tg'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">Telegram</i></span><span class="ll-tag">{SOC['max'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">MAX</i></span><span class="ll-tag">{SOC['vk'].replace('<svg','<svg fill="#072730"')}<i class="ll-sr">VK</i></span></div></a>
 <a class="ll-card ll-cc ll-reveal" style="--d:.2s" href="#series"><h3>Серии Laserline под условия резки</h3>{ARROW}
@@ -120,9 +130,9 @@ cat_inner=sec_head('01','Каталог','Комплект под вашу мо�
 <div class="ll-steps ll-reveal" style="--d:.1s">
 <div class="ll-card ll-step"><div class="ll-label">Шаг 1</div><h3>Марка станка</h3><div id="llBrands"></div></div>
 <div class="ll-card ll-step"><div class="ll-label">Шаг 2</div><h3>Модель</h3><div id="llModels"></div></div>
-<div class="ll-card ll-step"><div class="ll-label">Шаг 3</div><h3>Серия</h3><div id="llSeries"></div><p class="ll-hint">Серия зависит от толщины металла и характера резки. <a class="ll-link" href="#series">Как выбрать серию →</a></p></div>
+<div class="ll-card ll-step"><div class="ll-label">Шаг 3</div><h3>Серия</h3><div id="llSeries"></div><p class="ll-hint">Серия зависит от толщины металла и характера резки. <a class="ll-link" href="#series">Как выбрать серию →</a> <a class="ll-link" href="#consult">Не уверены? Спросите инженера →</a></p></div>
 <button type="button" class="ll-btn" id="llShow" style="justify-content:flex-start;text-align:left">Показать комплект</button>
-</div></div><p class="ll-cfg-note">Нет вашей модели в списке? <a class="ll-link" href="#diagnostics">Подберём по двум фотографиям →</a></p>
+</div></div><p class="ll-cfg-note">Нет вашей модели в списке? <a class="ll-link" href="#consult">Спросите инженера, это бесплатно →</a></p>
 <div class="ll-modal" id="llModal" role="dialog" aria-modal="true" aria-labelledby="llMTitle"><div class="ll-modal-box">
 <div><div class="ll-modal-img">{modal_art}</div><div class="ll-modal-draw">Чертежи здесь будут</div><p class="ll-modal-pdf">Скачать полную спецификацию (PDF)</p></div>
 <div><div class="ll-modal-top"><span class="ll-label">Модель гофрозащиты</span><button class="ll-close" type="button" id="llClose" aria-label="Закрыть"></button></div>
@@ -135,12 +145,12 @@ blocks['03-catalog']=wrap(cat_inner,id='catalog')
 def dstep(time,title,txt,art,link=''):
     lk=f'<a class="ll-link ll-link--acc" href="#video">{link}</a>' if link else ''
     return f'<div class="ll-card ll-dstep ll-reveal"><div class="ll-dbody"><div class="ll-dtop"><div class="ll-art">{art}</div><span class="ll-time">{time}</span></div><h3 class="ll-h4">{title}</h3><p class="ll-body ll-muted">{txt}</p>{lk}</div></div>'
-diag=sec_head('02','Экспресс-диагностика','Подбор защиты по двум фотографиям — расчёт за 2 часа','Для нестандартных моделей и изношенных узлов. Инженер-конструктор определит причину износа и подберёт материал под ваши условия: окалина, температура, СОЖ. Без опросных листов.')
-diag+='<div class="ll-steps3">'+dstep('0 мин','Фотографии узла','Общий план защиты на станке и крупный план повреждения. Модель станка — по табличке или в сообщении.',photos(PAPER,GREY,NAVY),'Как снять размеры гофры — видео 2 мин →')+dstep('≤ 1 час','Анализ инженером','Заявку ведёт инженер-конструктор. Определяет причину износа и подбирает материал под окалину, температуру и СОЖ.',analysis(PAPER,NAVY,BLUE))+dstep('2 часа','Расчёт','Причина износа, материал, стоимость и срок изготовления — за 2 часа. Без опросных листов.',calc(PAPER,NAVY,BLUE))+'</div>'
-diag+=f'''<div class="ll-cta"><div class="ll-cta-photo ll-reveal"><div><h3 class="ll-h3">Отправить фото инженеру</h3><p class="ll-body">Без опросных листов и обязательств</p></div>
+diag=sec_head('02','Консультация инженера','Экспертная консультация инженера — бесплатно','Нужна экспертная рекомендация инженеров по подбору наиболее экономически выгодной комплектации? Это бесплатно. Пришлите три вещи, и мы вернёмся с рекомендацией. Даём её на основании многолетнего опыта: исходим из состояния, характера износа и срока службы текущего комплекта ваших гофр.')
+diag+='<div class="ll-steps3">'+dstep('1','Фото шильдика станка','Табличка на станке с маркой и моделью: по ней инженер определяет, какой у вас станок.',nameplate(PAPER,GREY,NAVY))+dstep('2','Фото или видео всех гофрозащит','Снимите каждую гофру, включая изношенные места и повреждения. По снимкам видны состояние и характер износа.',photocards(NAVY,GREY,PAPER,BLUE),'Как снять размеры гофры — видео 2 мин →')+dstep('3','Примерный срок службы гофр','Сколько работает текущий комплект. По сроку службы видно, насколько он выдерживает ваши условия.',lifetime(PAPER,GREY,NAVY))+'</div>'
+diag+=f'''<div class="ll-cta"><div class="ll-cta-photo ll-reveal"><div><h3 class="ll-h3">Отправить данные инженеру</h3><p class="ll-body">Бесплатно и без обязательств</p></div>
 <div class="ll-msg"><a href="{TG_URL}" target="_blank" rel="noopener">{SOC['tg']}<i class="ll-sr">Telegram</i></a><a href="{MAX_URL}" target="_blank" rel="noopener">{SOC['max']}<i class="ll-sr">MAX</i></a><a href="{VK_URL}" target="_blank" rel="noopener">{SOC['vk']}<i class="ll-sr">VK</i></a></div></div>
 <div class="ll-urgent ll-reveal" style="--d:.1s"><b>24 ч</b><div><span class="ll-label">Аварийная остановка?</span><p>Напишите «срочно» — отгрузим в течение 24 часов после оплаты.</p></div></div></div>'''
-blocks['04-diagnostics']=wrap(diag,id='diagnostics')
+blocks['04-diagnostics']=wrap(diag,id='consult')
 # ---------- 05 серии ----------
 def meters(vals,names=('Нагрузка','СОЖ и абразив','Окалина и капли')):
     return '<div class="ll-meters">'+''.join(f'<div class="ll-meter"><span>{n}</span><span class="ll-dots">'+''.join(f'<i class="{"on" if k<v else ""}"></i>' for k in range(5))+'</span></div>' for n,v in zip(names,vals))+'</div>'
@@ -203,7 +213,7 @@ blocks['10-request']=wrap(fm,id='request',dark=True)
 logo_light_cls=logo_light.replace('<svg','<svg class="logo"',1)
 blocks['11-footer']=f'''<footer class="ll ll-footer" id="contacts"><div class="ll-wrap"><div class="ll-fgrid">
 <div>{logo_light_cls}<p>Гофрозащита для лазерных станков. Суб-бренд Станкозащиты.рф.</p></div>
-<div><h4>Навигация</h4><ul><li><a href="#catalog">Каталог</a></li><li><a href="#series">Серии</a></li><li><a href="#diagnostics">Экспресс-диагностика</a></li><li><a href="#delivery">Условия</a></li></ul></div>
+<div><h4>Навигация</h4><ul><li><a href="#catalog">Каталог</a></li><li><a href="#series">Серии</a></li><li><a href="#consult">Консультация инженера</a></li><li><a href="#delivery">Условия</a></li></ul></div>
 <div><h4>Информация</h4><ul><li><a href="#guarantees">Гарантии</a></li><li><a href="#video">Видео</a></li><li><a href="#guarantees">Рекомендации по сроку службы</a></li></ul></div>
 <div><h4>Контакты</h4><p>Телефон: +7 (___) ___-__-__</p><p>E-mail: info@…</p><p>Производство: город уточняется</p>
 <div class="ll-social"><a href="{TG_URL}" aria-label="Telegram" target="_blank" rel="noopener">{SOC['tg']}</a><a href="{MAX_URL}" aria-label="MAX" target="_blank" rel="noopener">{SOC['max']}</a><a href="{VK_URL}" aria-label="ВКонтакте" target="_blank" rel="noopener">{SOC['vk']}</a></div></div>
@@ -292,7 +302,7 @@ HEAD=f'''<!-- Laserline: вставьте в Настройки сайта → �
 # то же самое для тарифов без доступа к HEAD: стили и шрифты первым блоком T123
 STYLES=HEAD.replace('<!-- Laserline: вставьте в Настройки сайта → Ещё → HTML-код для вставки внутрь HEAD -->','<!-- Laserline: первый блок T123 на странице (стили и шрифты). Ничего не показывает, только подключает оформление -->')
 (ROOT/BDIR/'00-styles.html').write_text(STYLES.replace('<!-- Laserline: первый блок T123 на странице (стили и шрифты). Ничего не показывает, только подключает оформление -->','<!-- БЛОК 1 из 13 (файл 00-styles) · стили и шрифты (ничего не показывает) · вставить в отдельный блок T123 «HTML», самым первым -->')+'\n')
-NAMES={'00-styles':'стили и шрифты (ничего не показывает)','01-header':'шапка','02-hero':'первый экран','03-catalog':'каталог и подбор станка','04-diagnostics':'экспресс-диагностика','05-series':'серии','06-video':'видео','07-guarantees':'гарантии','08-clients':'заказчики','09-delivery':'условия поставки','10-request':'форма заявки','11-footer':'подвал','99-scripts':'скрипты (последний блок)'}
+NAMES={'00-styles':'стили и шрифты (ничего не показывает)','01-header':'шапка','02-hero':'первый экран','03-catalog':'каталог и подбор станка','04-diagnostics':'консультация инженера','05-series':'серии','06-video':'видео','07-guarantees':'гарантии','08-clients':'заказчики','09-delivery':'условия поставки','10-request':'форма заявки','11-footer':'подвал','99-scripts':'скрипты (последний блок)'}
 ORDER=['00-styles']+sorted(k for k in blocks if k[0]=='0' and k!='00-styles' or k[:2]=='10' or k[:2]=='11')+['99-scripts']
 def tag(k):
     return '<!-- БЛОК %d из %d (файл %s) · %s · вставить в отдельный блок T123 «HTML» -->\n'%(ORDER.index(k)+1,len(ORDER),k,NAMES.get(k,k))
